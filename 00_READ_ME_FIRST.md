@@ -4,7 +4,7 @@
 
 A **complete, functional React Native mobile app** with:
 
-- ✅ **10 fully working screens** matching your wireframes
+- ✅ **12 fully working screens** matching your wireframes
 - ✅ **Real OpenAI integration** for personalized diet recommendations
 - ✅ **Professional UI/UX** with modern design
 - ✅ **Complete documentation** (8 comprehensive guides)
@@ -23,7 +23,7 @@ Then press **`i`** (iOS) or **`a`** (Android)
 
 ---
 
-## 📱 The 10 Screens You Built
+## 📱 The 12 Screens You Built
 
 ### 1️⃣ Welcome Screen
 - Multiple sign-in options (Gmail, iPhone, Facebook)
@@ -89,6 +89,22 @@ Then press **`i`** (iOS) or **`a`** (Android)
 - Navigate to Swap Ingredients
 - Save custom recipes to collection
 - **File**: `src/screens/LoadRecipeScreen.js`
+
+### 1️⃣1️⃣ Today's Metrics Screen
+- Displays total calories consumed vs target
+- Shows nutrient breakdown with progress bars
+- Tracks progress toward wellness goals
+- Shows days remaining to achieve goal
+- Real-time updates when meals are logged
+- **File**: `src/screens/TodaysMetricsScreen.js`
+
+### 1️⃣2️⃣ Groceries Screen
+- Auto-generated grocery list from saved recipes
+- Shows items needed with quantities
+- Edit item names and quantities
+- Delete items from list
+- Share list functionality
+- **File**: `src/screens/GroceriesScreen.js`
 
 ---
 
@@ -191,9 +207,9 @@ Then explore:
 
 | Metric | Value |
 |--------|-------|
-| **Screens** | 10 complete |
-| **Code Files** | 13 JavaScript files |
-| **Lines of Code** | ~2,500+ |
+| **Screens** | 12 complete |
+| **Code Files** | 15 JavaScript files |
+| **Lines of Code** | ~3,500+ |
 | **Documentation** | 8 guides, 2,000+ lines |
 | **Dependencies** | 11 packages |
 | **AI Integration** | ✅ OpenAI GPT-3.5 |
@@ -230,7 +246,7 @@ Then explore:
 ```
 📱 App.js                          Main entry point
 📁 src/
-   ├── screens/                    All 10 screens
+   ├── screens/                    All 12 screens
    │   ├── WelcomeScreen.js
    │   ├── PersonalizationScreen.js
    │   ├── GoalsScreen.js
@@ -240,7 +256,9 @@ Then explore:
    │   ├── RecipeDetailScreen.js
    │   ├── LogMealConfirmationScreen.js
    │   ├── SwapIngredientsScreen.js
-   │   └── LoadRecipeScreen.js
+   │   ├── LoadRecipeScreen.js
+   │   ├── TodaysMetricsScreen.js
+   │   └── GroceriesScreen.js
    ├── services/
    │   └── openAIService.js        AI integration
    ├── context/
@@ -285,7 +303,7 @@ rm -rf node_modules && npm install
 1. ✅ Read [START_HERE.md](START_HERE.md)
 2. ✅ Run `npm install`
 3. ✅ Run `npm start`
-4. ✅ Test all 10 screens
+4. ✅ Test all 12 screens
 
 ### Short Term (This Week)
 - Explore the code
@@ -309,7 +327,7 @@ rm -rf node_modules && npm install
 
 ## 🌟 Highlights
 
-✨ **Complete** - All 10 screens working end-to-end
+✨ **Complete** - All 12 screens working end-to-end
 ✨ **AI-Powered** - Real OpenAI integration
 ✨ **Professional** - Production-ready UI
 ✨ **Documented** - Comprehensive guides
@@ -345,7 +363,7 @@ A: Edit `src/services/openAIService.js`
 ## 🎯 Your Complete Package
 
 ### ✅ Code
-- 10 screen components
+- 12 screen components
 - Navigation setup
 - State management
 - AI integration
@@ -409,11 +427,13 @@ Choose your path:
 
 You now have a **complete, AI-powered health and wellness mobile app** with:
 
-- ✅ 10 fully functional screens matching your wireframes
+- ✅ 12 fully functional screens matching your wireframes
 - ✅ Professional UI with modern design
 - ✅ Real OpenAI integration for personalized recommendations
-- ✅ Complete user flow from onboarding to meal logging
+- ✅ Complete user flow from onboarding to tracking
 - ✅ Custom recipe creation and ingredient swapping
+- ✅ Nutrition tracking with Today's Metrics
+- ✅ Auto-generated grocery lists
 - ✅ Comprehensive documentation
 - ✅ Ready to demo and extend
 

@@ -14,6 +14,8 @@ import RecipeDetailScreen from './src/screens/RecipeDetailScreen';
 import LoadRecipeScreen from './src/screens/LoadRecipeScreen';
 import SwapIngredientsScreen from './src/screens/SwapIngredientsScreen';
 import LogMealConfirmationScreen from './src/screens/LogMealConfirmationScreen';
+import TodaysMetricsScreen from './src/screens/TodaysMetricsScreen';
+import GroceriesScreen from './src/screens/GroceriesScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -104,6 +106,20 @@ export default function App() {
               title: 'Meal Logged',
               presentation: 'transparentModal',
               headerShown: false,
+            }}
+          />
+          <Stack.Screen 
+            name="TodaysMetrics" 
+            component={TodaysMetricsScreen}
+            options={{ 
+              title: "Today's Metrics",
+            }}
+          />
+          <Stack.Screen 
+            name="Groceries" 
+            component={GroceriesScreen}
+            options={{ 
+              title: 'Grocery List',
             }}
           />
         </Stack.Navigator>

@@ -9,6 +9,7 @@ export default function MealRecommendationsScreen({ navigation }) {
   const [error, setError] = useState(null);
   const [mealRecommendations, setMealRecommendations] = useState(null);
   const [savedRecipes, setSavedRecipes] = useState({});
+  const [scrollPositions, setScrollPositions] = useState({});
 
   useEffect(() => {
     generateMealRecommendations();
@@ -41,12 +42,26 @@ export default function MealRecommendationsScreen({ navigation }) {
   };
 
   const handleGroceryList = () => {
-    // TODO: Navigate to Grocery List screen
-    alert('Grocery List feature coming soon!');
+    navigation.navigate('Groceries');
   };
 
   const handleLoadRecipe = () => {
     navigation.navigate('LoadRecipe');
+  };
+
+  const scrollLeft = (mealType, scrollViewRef) => {
+    const currentPosition = scrollPositions[mealType] || 0;
+    const newPosition = Math.max(0, currentPosition - 220); // 200 width + 20 margin
+    scrollViewRef.scrollTo({ x: newPosition, animated: true });
+    setScrollPositions(prev => ({ ...prev, [mealType]: newPosition }));
+  };
+
+  const scrollRight = (mealType, scrollViewRef, totalRecipes) => {
+    const currentPosition = scrollPositions[mealType] || 0;
+    const maxScroll = (totalRecipes - 4) * 220; // Show 4 recipes at a time
+    const newPosition = Math.min(maxScroll, currentPosition + 220);
+    scrollViewRef.scrollTo({ x: newPosition, animated: true });
+    setScrollPositions(prev => ({ ...prev, [mealType]: newPosition }));
   };
 
   const renderRecipeCard = (recipe, mealType, index) => {
@@ -76,16 +91,47 @@ export default function MealRecommendationsScreen({ navigation }) {
   const renderMealSection = (mealType, recipes) => {
     if (!recipes || recipes.length === 0) return null;
 
+    const scrollViewRef = React.createRef();
+    const currentPosition = scrollPositions[mealType] || 0;
+    const canScrollLeft = currentPosition > 0;
+    const canScrollRight = currentPosition < (recipes.length - 4) * 220;
+
     return (
       <View key={mealType} style={styles.mealSection}>
-        <Text style={styles.mealTitle}>{mealType}</Text>
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.recipesScroll}
-        >
-          {recipes.map((recipe, index) => renderRecipeCard(recipe, mealType, index))}
-        </ScrollView>
+        <View style={styles.mealHeader}>
+          <Text style={styles.mealTitle}>{mealType}</Text>
+          <Text style={styles.mealCount}>{recipes.length} options</Text>
+        </View>
+        
+        <View style={styles.carouselContainer}>
+          {canScrollLeft && (
+            <TouchableOpacity 
+              style={[styles.arrowButton, styles.leftArrow]}
+              onPress={() => scrollLeft(mealType, scrollViewRef.current)}
+            >
+              <Text style={styles.arrowText}>‹</Text>
+            </TouchableOpacity>
+          )}
+          
+          <ScrollView 
+            ref={scrollViewRef}
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.recipesScroll}
+            scrollEnabled={false}
+          >
+            {recipes.map((recipe, index) => renderRecipeCard(recipe, mealType, index))}
+          </ScrollView>
+          
+          {canScrollRight && (
+            <TouchableOpacity 
+              style={[styles.arrowButton, styles.rightArrow]}
+              onPress={() => scrollRight(mealType, scrollViewRef.current, recipes.length)}
+            >
+              <Text style={styles.arrowText}>›</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     );
   };
@@ -224,11 +270,59 @@ const styles = StyleSheet.create({
   mealSection: {
     marginBottom: 32,
   },
+  mealHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   mealTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 16,
     color: '#333',
+  },
+  mealCount: {
+    fontSize: 14,
+    color: '#666',
+    backgroundColor: '#E8F4FD',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  carouselContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  arrowButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#4A90E2',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    zIndex: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  leftArrow: {
+    left: -10,
+  },
+  rightArrow: {
+    right: -10,
+  },
+  arrowText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#fff',
+    lineHeight: 36,
   },
   recipesScroll: {
     paddingRight: 24,
