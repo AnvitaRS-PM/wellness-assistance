@@ -9,7 +9,7 @@ export default function MealRecommendationsScreen({ navigation }) {
   const [error, setError] = useState(null);
   const [mealRecommendations, setMealRecommendations] = useState(null);
   const [savedRecipes, setSavedRecipes] = useState({});
-  const [scrollPositions, setScrollPositions] = useState({});
+  const scrollRefs = React.useRef({});
 
   useEffect(() => {
     generateMealRecommendations();
@@ -49,25 +49,6 @@ export default function MealRecommendationsScreen({ navigation }) {
     navigation.navigate('LoadRecipe');
   };
 
-  const scrollLeft = (mealType, scrollViewRef) => {
-    if (scrollViewRef && scrollViewRef.current) {
-      const currentPosition = scrollPositions[mealType] || 0;
-      const newPosition = Math.max(0, currentPosition - 220); // 200 width + 20 margin
-      scrollViewRef.current.scrollTo({ x: newPosition, animated: true });
-      setScrollPositions(prev => ({ ...prev, [mealType]: newPosition }));
-    }
-  };
-
-  const scrollRight = (mealType, scrollViewRef, totalRecipes) => {
-    if (scrollViewRef && scrollViewRef.current) {
-      const currentPosition = scrollPositions[mealType] || 0;
-      const maxScroll = Math.max(0, (totalRecipes - 1) * 220); // Scroll through all recipes
-      const newPosition = Math.min(maxScroll, currentPosition + 220);
-      scrollViewRef.current.scrollTo({ x: newPosition, animated: true });
-      setScrollPositions(prev => ({ ...prev, [mealType]: newPosition }));
-    }
-  };
-
   const renderRecipeCard = (recipe, mealType, index) => {
     const key = `${mealType}-${index}`;
     const isSaved = savedRecipes[key];
@@ -95,11 +76,6 @@ export default function MealRecommendationsScreen({ navigation }) {
   const renderMealSection = (mealType, recipes) => {
     if (!recipes || recipes.length === 0) return null;
 
-    const scrollViewRef = React.useRef(null);
-    const currentPosition = scrollPositions[mealType] || 0;
-    const canScrollLeft = currentPosition > 0;
-    const canScrollRight = currentPosition < (recipes.length - 1) * 220;
-
     return (
       <View key={mealType} style={styles.mealSection}>
         <View style={styles.mealHeader}>
@@ -107,37 +83,17 @@ export default function MealRecommendationsScreen({ navigation }) {
           <Text style={styles.mealCount}>{recipes.length} options</Text>
         </View>
         
-        <View style={styles.carouselContainer}>
-          {canScrollLeft && (
-            <TouchableOpacity 
-              style={[styles.arrowButton, styles.leftArrow]}
-              onPress={() => scrollLeft(mealType, scrollViewRef)}
-            >
-              <Text style={styles.arrowText}>‹</Text>
-            </TouchableOpacity>
-          )}
-          
-          <ScrollView 
-            ref={scrollViewRef}
-            horizontal 
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.recipesScroll}
-            scrollEnabled={true}
-            pagingEnabled={false}
-            decelerationRate="fast"
-          >
-            {recipes.map((recipe, index) => renderRecipeCard(recipe, mealType, index))}
-          </ScrollView>
-          
-          {canScrollRight && (
-            <TouchableOpacity 
-              style={[styles.arrowButton, styles.rightArrow]}
-              onPress={() => scrollRight(mealType, scrollViewRef, recipes.length)}
-            >
-              <Text style={styles.arrowText}>›</Text>
-            </TouchableOpacity>
-          )}
-        </View>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.recipesScroll}
+          scrollEnabled={true}
+          decelerationRate="fast"
+          snapToInterval={216}
+          snapToAlignment="start"
+        >
+          {recipes.map((recipe, index) => renderRecipeCard(recipe, mealType, index))}
+        </ScrollView>
       </View>
     );
   };
@@ -294,41 +250,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
-  },
-  carouselContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    position: 'relative',
-  },
-  arrowButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#4A90E2',
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    zIndex: 10,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  leftArrow: {
-    left: -10,
-  },
-  rightArrow: {
-    right: -10,
-  },
-  arrowText: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#fff',
-    lineHeight: 36,
   },
   recipesScroll: {
     paddingRight: 24,
