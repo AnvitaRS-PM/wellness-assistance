@@ -206,6 +206,13 @@ export default function SwapIngredientsScreen({ route, navigation }) {
           >
             <Text style={styles.actionButtonText}>Log Meal</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={[styles.actionButton, styles.metricsButton]} 
+            onPress={() => navigation.navigate('TodaysMetrics')}
+          >
+            <Text style={styles.actionButtonText}>Today's Intake</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -461,6 +468,9 @@ const styles = StyleSheet.create({
   },
   logButton: {
     backgroundColor: '#4A90E2',
+  },
+  metricsButton: {
+    backgroundColor: '#9C27B0',
   },
   actionButtonText: {
     fontSize: 16,

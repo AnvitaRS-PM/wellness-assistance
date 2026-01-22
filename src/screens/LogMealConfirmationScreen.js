@@ -73,9 +73,20 @@ export default function LogMealConfirmationScreen({ route, navigation }) {
               <Text style={styles.mealType}>{mealType}</Text>
             )}
           </View>
-          <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
-            <Text style={styles.closeButtonText}>Close</Text>
-          </TouchableOpacity>
+          <View style={styles.buttonRow}>
+            <TouchableOpacity 
+              style={[styles.actionButton, styles.metricsButton]} 
+              onPress={() => {
+                navigation.navigate('TodaysMetrics');
+                setTimeout(() => navigation.goBack(), 100);
+              }}
+            >
+              <Text style={styles.actionButtonText}>Today's Intake</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
         </Animated.View>
       </TouchableOpacity>
     </SafeAreaView>
@@ -156,17 +167,39 @@ const styles = StyleSheet.create({
     opacity: 0.8,
     fontWeight: '600',
   },
+  buttonRow: {
+    flexDirection: 'row',
+    gap: 12,
+    width: '100%',
+  },
+  actionButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 25,
+    alignItems: 'center',
+  },
+  metricsButton: {
+    backgroundColor: '#9C27B0',
+  },
+  actionButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '600',
+  },
   closeButton: {
+    flex: 1,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
     paddingVertical: 12,
-    paddingHorizontal: 32,
+    paddingHorizontal: 16,
     borderRadius: 25,
     borderWidth: 2,
     borderColor: '#fff',
+    alignItems: 'center',
   },
   closeButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
   },
 });

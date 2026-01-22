@@ -209,7 +209,14 @@ export default function GroceriesScreen({ navigation }) {
           </>
         )}
 
-        {/* Main Action Button */}
+        {/* Main Action Buttons */}
+        <TouchableOpacity
+          style={styles.todaysIntakeButton}
+          onPress={() => navigation.navigate('TodaysMetrics')}
+        >
+          <Text style={styles.buttonText}>Today's Intake</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.mealPlanningButton}
           onPress={() => navigation.navigate('MealRecommendations')}
@@ -438,6 +445,19 @@ const styles = StyleSheet.create({
   },
   actionButtonText: {
     fontSize: 14,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  todaysIntakeButton: {
+    backgroundColor: '#9C27B0',
+    padding: 18,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 8,
+  },
+  buttonText: {
+    fontSize: 18,
     fontWeight: '600',
     color: '#fff',
   },

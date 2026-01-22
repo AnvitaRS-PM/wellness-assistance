@@ -116,6 +116,13 @@ export default function RecipeDetailScreen({ route, navigation }) {
           >
             <Text style={styles.actionButtonText}>Swap Ingredients</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={[styles.actionButton, styles.metricsButton]} 
+            onPress={() => navigation.navigate('TodaysMetrics')}
+          >
+            <Text style={styles.actionButtonText}>Today's Intake</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -257,6 +264,9 @@ const styles = StyleSheet.create({
   },
   swapButton: {
     backgroundColor: '#FF9800',
+  },
+  metricsButton: {
+    backgroundColor: '#9C27B0',
   },
   actionButtonText: {
     fontSize: 16,
