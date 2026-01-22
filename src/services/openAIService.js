@@ -168,7 +168,7 @@ Remember: Prioritize HEALTH and HEALING over preferences. Be medically sound and
             }
           ],
           temperature: 0.7,
-          max_tokens: 3500
+          max_tokens: 4000
         },
         {
           headers: {
@@ -224,7 +224,7 @@ CRITICAL INSTRUCTIONS FOR JSON FORMAT:
 
 MEAL TYPES TO GENERATE (USE THESE EXACT NAMES AS JSON KEYS):
 Meal types from schedule: ${mealTypes.join(', ')}
-Generate exactly 3 recipe options for EACH of these meal types.
+Generate exactly 7 recipe options for EACH of these meal types.
 IMPORTANT: Use these EXACT meal type names as your JSON keys (case-sensitive).
 
 RECIPE REQUIREMENTS:
@@ -280,20 +280,20 @@ ${mealTypes.map((type, idx) => `  "${type}": [
       ],
       "instructions": ["step 1", "step 2", "step 3", "step 4"]
     }
-    /* 2 more recipes */
+    /* 6 more recipes - total 7 recipes per meal type */
   ]${idx < mealTypes.length - 1 ? ',' : ''}`).join('\n')}
 }
 
 CRITICAL REQUIREMENTS:
-1. Generate EXACTLY 3 recipes per meal type (not 4, not 2)
-2. Keep recipes CONCISE to fit within token limits
+1. Generate EXACTLY 7 recipes per meal type (not more, not less)
+2. Keep recipes CONCISE to fit within token limits (3-4 ingredients, 3-4 instructions each)
 3. MUST properly close ALL JSON brackets and braces
 4. DO NOT truncate - complete the entire JSON structure
 5. Use THERAPEUTIC ingredients for: ${allConditions}
 6. Prioritize HEALING foods from recommended list
-7. Create variety across all 3 recipes
+7. Create variety across all 7 recipes per meal type
 
-FINAL REMINDER: Your response MUST be complete, valid JSON. If running out of space, reduce recipe detail slightly but COMPLETE the JSON structure for all meal types: ${mealTypes.join(', ')}`;
+FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EACH meal type. If running out of space, reduce recipe detail slightly but COMPLETE the JSON structure for all meal types: ${mealTypes.join(', ')}`;
   },
 
   extractMealTypes(mealSchedule) {
@@ -383,6 +383,25 @@ FINAL REMINDER: Your response MUST be complete, valid JSON. If running out of sp
   },
 
   getFallbackMealRecommendations() {
+    // Generate 7 recipes for each of 5 meal types
+    const createRecipe = (name, calories, ingredients, nutrients, instructions) => ({
+      name, calories, ingredients, nutrients, instructions
+    });
+
+    const basicNutrients = [
+      {"name": "Protein", "value": "20g"},
+      {"name": "Carbs", "value": "25g"},
+      {"name": "Fat", "value": "15g"},
+      {"name": "Fiber", "value": "5g"},
+      {"name": "Vitamin A", "value": "120mcg"},
+      {"name": "Vitamin C", "value": "15mg"},
+      {"name": "Vitamin D", "value": "3mcg"},
+      {"name": "Zinc", "value": "2mg"},
+      {"name": "Magnesium", "value": "50mg"},
+      {"name": "Iron", "value": "2.5mg"},
+      {"name": "Calcium", "value": "80mg"}
+    ];
+
     return {
       "Breakfast": [
         {
@@ -518,6 +537,78 @@ FINAL REMINDER: Your response MUST be complete, valid JSON. If running out of sp
             "Pour eggs into pan, add spinach, cook until edges set (2-3 min)",
             "Fold omelet in half, cook for 1 more minute, and serve hot"
           ]
+        },
+        {
+          "name": "Oatmeal with Berries",
+          "calories": 300,
+          "ingredients": ["1/2 cup rolled oats", "1 cup almond milk", "1/2 cup mixed berries", "1 tbsp chia seeds", "1 tsp honey"],
+          "nutrients": basicNutrients,
+          "instructions": ["Cook oats in almond milk for 5 minutes", "Top with berries, chia seeds, and honey", "Serve warm"]
+        },
+        {
+          "name": "Smoothie Bowl",
+          "calories": 280,
+          "ingredients": ["1 frozen banana", "1/2 cup spinach", "1/2 cup berries", "1/2 cup yogurt", "Granola topping"],
+          "nutrients": basicNutrients,
+          "instructions": ["Blend banana, spinach, berries, and yogurt", "Pour into bowl", "Top with granola and serve"]
+        },
+        {
+          "name": "Whole Grain Pancakes",
+          "calories": 320,
+          "ingredients": ["1 cup whole wheat flour", "1 egg", "3/4 cup milk", "1 tbsp honey", "Berries for topping"],
+          "nutrients": basicNutrients,
+          "instructions": ["Mix flour, egg, milk, and honey", "Cook on griddle until golden", "Top with berries"]
+        }
+      ],
+      "Mid-morning snack": [
+        {
+          "name": "Apple with Almond Butter",
+          "calories": 180,
+          "ingredients": ["1 medium apple, sliced", "2 tbsp almond butter"],
+          "nutrients": basicNutrients,
+          "instructions": ["Slice apple", "Serve with almond butter for dipping"]
+        },
+        {
+          "name": "Greek Yogurt with Honey",
+          "calories": 150,
+          "ingredients": ["1 cup Greek yogurt", "1 tbsp honey", "Handful of nuts"],
+          "nutrients": basicNutrients,
+          "instructions": ["Place yogurt in bowl", "Drizzle with honey", "Top with nuts"]
+        },
+        {
+          "name": "Protein Smoothie",
+          "calories": 200,
+          "ingredients": ["1 scoop protein powder", "1 banana", "1 cup almond milk", "Ice cubes"],
+          "nutrients": basicNutrients,
+          "instructions": ["Blend all ingredients until smooth", "Pour into glass and serve"]
+        },
+        {
+          "name": "Hummus with Veggies",
+          "calories": 160,
+          "ingredients": ["1/4 cup hummus", "Carrot sticks", "Cucumber slices", "Bell pepper strips"],
+          "nutrients": basicNutrients,
+          "instructions": ["Slice vegetables", "Serve with hummus for dipping"]
+        },
+        {
+          "name": "Trail Mix",
+          "calories": 190,
+          "ingredients": ["1/4 cup almonds", "1/4 cup walnuts", "2 tbsp dried cranberries", "2 tbsp dark chocolate chips"],
+          "nutrients": basicNutrients,
+          "instructions": ["Mix all ingredients in a bowl", "Portion into snack bag"]
+        },
+        {
+          "name": "Cottage Cheese with Fruit",
+          "calories": 170,
+          "ingredients": ["1 cup cottage cheese", "1/2 cup pineapple chunks", "Sprinkle of cinnamon"],
+          "nutrients": basicNutrients,
+          "instructions": ["Place cottage cheese in bowl", "Top with pineapple", "Sprinkle cinnamon"]
+        },
+        {
+          "name": "Rice Cakes with Avocado",
+          "calories": 185,
+          "ingredients": ["2 rice cakes", "1/2 avocado, mashed", "Cherry tomatoes", "Sea salt"],
+          "nutrients": basicNutrients,
+          "instructions": ["Spread avocado on rice cakes", "Top with tomato slices", "Season with salt"]
         }
       ],
       "Lunch": [
@@ -657,6 +748,78 @@ FINAL REMINDER: Your response MUST be complete, valid JSON. If running out of sp
             "Add cooked lentils, reduce heat and simmer for 15 minutes",
             "Season with salt and pepper, garnish with cilantro and serve hot"
           ]
+        },
+        {
+          "name": "Turkey Wrap",
+          "calories": 350,
+          "ingredients": ["Whole wheat tortilla", "100g sliced turkey", "Lettuce", "Tomato", "Avocado", "Mustard"],
+          "nutrients": basicNutrients,
+          "instructions": ["Layer turkey, lettuce, tomato, and avocado on tortilla", "Spread mustard", "Roll up and serve"]
+        },
+        {
+          "name": "Tuna Salad",
+          "calories": 320,
+          "ingredients": ["1 can tuna", "Mixed greens", "Cherry tomatoes", "Cucumber", "Olive oil", "Lemon juice"],
+          "nutrients": basicNutrients,
+          "instructions": ["Drain tuna", "Mix with greens, tomatoes, and cucumber", "Dress with olive oil and lemon"]
+        },
+        {
+          "name": "Veggie Burger Bowl",
+          "calories": 380,
+          "ingredients": ["1 veggie burger patty", "Quinoa", "Roasted vegetables", "Tahini sauce"],
+          "nutrients": basicNutrients,
+          "instructions": ["Cook veggie burger as directed", "Serve over quinoa with roasted vegetables", "Drizzle with tahini"]
+        }
+      ],
+      "Afternoon snack": [
+        {
+          "name": "Protein Bar",
+          "calories": 200,
+          "ingredients": ["1 homemade or store-bought protein bar", "Piece of fruit"],
+          "nutrients": basicNutrients,
+          "instructions": ["Enjoy protein bar with fruit"]
+        },
+        {
+          "name": "Edamame",
+          "calories": 150,
+          "ingredients": ["1 cup steamed edamame", "Sea salt"],
+          "nutrients": basicNutrients,
+          "instructions": ["Steam edamame for 5 minutes", "Sprinkle with sea salt"]
+        },
+        {
+          "name": "Dark Chocolate and Almonds",
+          "calories": 180,
+          "ingredients": ["10 almonds", "2 squares dark chocolate (70% cacao)"],
+          "nutrients": basicNutrients,
+          "instructions": ["Enjoy almonds with dark chocolate"]
+        },
+        {
+          "name": "Veggie Sticks with Guacamole",
+          "calories": 160,
+          "ingredients": ["Carrot sticks", "Celery sticks", "1/4 cup guacamole"],
+          "nutrients": basicNutrients,
+          "instructions": ["Cut vegetables into sticks", "Serve with guacamole"]
+        },
+        {
+          "name": "Boiled Eggs",
+          "calories": 140,
+          "ingredients": ["2 hard-boiled eggs", "Pinch of paprika"],
+          "nutrients": basicNutrients,
+          "instructions": ["Boil eggs for 10 minutes", "Peel and season with paprika"]
+        },
+        {
+          "name": "Fruit and Nut Mix",
+          "calories": 170,
+          "ingredients": ["1/2 apple, sliced", "10 cashews", "5 dried apricots"],
+          "nutrients": basicNutrients,
+          "instructions": ["Slice apple", "Mix with nuts and dried fruit"]
+        },
+        {
+          "name": "Cheese and Crackers",
+          "calories": 180,
+          "ingredients": ["4 whole grain crackers", "2 oz cheese slices", "Grapes"],
+          "nutrients": basicNutrients,
+          "instructions": ["Arrange crackers with cheese", "Serve with grapes"]
         }
       ],
       "Dinner": [
@@ -798,6 +961,27 @@ FINAL REMINDER: Your response MUST be complete, valid JSON. If running out of sp
             "Pour in coconut milk and add chickpeas, bring to simmer",
             "Cook for 15-20 minutes until vegetables are tender, garnish with cilantro and serve"
           ]
+        },
+        {
+          "name": "Baked Chicken with Sweet Potato",
+          "calories": 420,
+          "ingredients": ["150g chicken breast", "1 medium sweet potato", "Olive oil", "Rosemary", "Garlic"],
+          "nutrients": basicNutrients,
+          "instructions": ["Season chicken with rosemary and garlic", "Bake at 400°F for 25 minutes", "Serve with baked sweet potato"]
+        },
+        {
+          "name": "Shrimp Tacos",
+          "calories": 390,
+          "ingredients": ["150g shrimp", "2 corn tortillas", "Cabbage slaw", "Avocado", "Lime", "Cilantro"],
+          "nutrients": basicNutrients,
+          "instructions": ["Sauté shrimp with spices", "Warm tortillas", "Fill with shrimp, slaw, and avocado"]
+        },
+        {
+          "name": "Beef and Broccoli Stir-Fry",
+          "calories": 410,
+          "ingredients": ["150g lean beef", "2 cups broccoli", "Soy sauce", "Garlic", "Ginger", "Sesame oil"],
+          "nutrients": basicNutrients,
+          "instructions": ["Stir-fry beef until browned", "Add broccoli, garlic, and ginger", "Season with soy sauce and sesame oil"]
         }
       ]
     };

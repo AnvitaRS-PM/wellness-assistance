@@ -50,18 +50,22 @@ export default function MealRecommendationsScreen({ navigation }) {
   };
 
   const scrollLeft = (mealType, scrollViewRef) => {
-    const currentPosition = scrollPositions[mealType] || 0;
-    const newPosition = Math.max(0, currentPosition - 220); // 200 width + 20 margin
-    scrollViewRef.scrollTo({ x: newPosition, animated: true });
-    setScrollPositions(prev => ({ ...prev, [mealType]: newPosition }));
+    if (scrollViewRef && scrollViewRef.current) {
+      const currentPosition = scrollPositions[mealType] || 0;
+      const newPosition = Math.max(0, currentPosition - 220); // 200 width + 20 margin
+      scrollViewRef.current.scrollTo({ x: newPosition, animated: true });
+      setScrollPositions(prev => ({ ...prev, [mealType]: newPosition }));
+    }
   };
 
   const scrollRight = (mealType, scrollViewRef, totalRecipes) => {
-    const currentPosition = scrollPositions[mealType] || 0;
-    const maxScroll = (totalRecipes - 4) * 220; // Show 4 recipes at a time
-    const newPosition = Math.min(maxScroll, currentPosition + 220);
-    scrollViewRef.scrollTo({ x: newPosition, animated: true });
-    setScrollPositions(prev => ({ ...prev, [mealType]: newPosition }));
+    if (scrollViewRef && scrollViewRef.current) {
+      const currentPosition = scrollPositions[mealType] || 0;
+      const maxScroll = Math.max(0, (totalRecipes - 1) * 220); // Scroll through all recipes
+      const newPosition = Math.min(maxScroll, currentPosition + 220);
+      scrollViewRef.current.scrollTo({ x: newPosition, animated: true });
+      setScrollPositions(prev => ({ ...prev, [mealType]: newPosition }));
+    }
   };
 
   const renderRecipeCard = (recipe, mealType, index) => {
@@ -91,10 +95,10 @@ export default function MealRecommendationsScreen({ navigation }) {
   const renderMealSection = (mealType, recipes) => {
     if (!recipes || recipes.length === 0) return null;
 
-    const scrollViewRef = React.createRef();
+    const scrollViewRef = React.useRef(null);
     const currentPosition = scrollPositions[mealType] || 0;
     const canScrollLeft = currentPosition > 0;
-    const canScrollRight = currentPosition < (recipes.length - 4) * 220;
+    const canScrollRight = currentPosition < (recipes.length - 1) * 220;
 
     return (
       <View key={mealType} style={styles.mealSection}>
@@ -107,7 +111,7 @@ export default function MealRecommendationsScreen({ navigation }) {
           {canScrollLeft && (
             <TouchableOpacity 
               style={[styles.arrowButton, styles.leftArrow]}
-              onPress={() => scrollLeft(mealType, scrollViewRef.current)}
+              onPress={() => scrollLeft(mealType, scrollViewRef)}
             >
               <Text style={styles.arrowText}>‹</Text>
             </TouchableOpacity>
@@ -118,7 +122,9 @@ export default function MealRecommendationsScreen({ navigation }) {
             horizontal 
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.recipesScroll}
-            scrollEnabled={false}
+            scrollEnabled={true}
+            pagingEnabled={false}
+            decelerationRate="fast"
           >
             {recipes.map((recipe, index) => renderRecipeCard(recipe, mealType, index))}
           </ScrollView>
@@ -126,7 +132,7 @@ export default function MealRecommendationsScreen({ navigation }) {
           {canScrollRight && (
             <TouchableOpacity 
               style={[styles.arrowButton, styles.rightArrow]}
-              onPress={() => scrollRight(mealType, scrollViewRef.current, recipes.length)}
+              onPress={() => scrollRight(mealType, scrollViewRef, recipes.length)}
             >
               <Text style={styles.arrowText}>›</Text>
             </TouchableOpacity>
