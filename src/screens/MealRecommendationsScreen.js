@@ -4,11 +4,10 @@ import { useUser } from '../context/UserContext';
 import { openAIService } from '../services/openAIService';
 
 export default function MealRecommendationsScreen({ navigation }) {
-  const { userData, updateUserData } = useUser();
+  const { userData, updateUserData, saveRecipe, unsaveRecipe, isRecipeSaved } = useUser();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [mealRecommendations, setMealRecommendations] = useState(null);
-  const [savedRecipes, setSavedRecipes] = useState({});
   const scrollRefs = React.useRef({});
 
   useEffect(() => {
@@ -29,12 +28,13 @@ export default function MealRecommendationsScreen({ navigation }) {
     }
   };
 
-  const toggleSaveRecipe = (mealType, recipeIndex) => {
-    const key = `${mealType}-${recipeIndex}`;
-    setSavedRecipes(prev => ({
-      ...prev,
-      [key]: !prev[key]
-    }));
+  const toggleSaveRecipe = (recipe, mealType) => {
+    const recipeWithMealType = { ...recipe, mealType };
+    if (isRecipeSaved(recipe.name, mealType)) {
+      unsaveRecipe(recipe.name, mealType);
+    } else {
+      saveRecipe(recipeWithMealType);
+    }
   };
 
   const handleRecipePress = (recipe, mealType) => {
@@ -50,8 +50,7 @@ export default function MealRecommendationsScreen({ navigation }) {
   };
 
   const renderRecipeCard = (recipe, mealType, index) => {
-    const key = `${mealType}-${index}`;
-    const isSaved = savedRecipes[key];
+    const isSaved = isRecipeSaved(recipe.name, mealType);
 
     return (
       <TouchableOpacity 
@@ -62,10 +61,13 @@ export default function MealRecommendationsScreen({ navigation }) {
         <View style={styles.recipeContent}>
           <Text style={styles.recipeName}>{recipe.name}</Text>
           <Text style={styles.recipeCalories}>Calories: {recipe.calories} Kcal</Text>
+          {recipe.prepTime && (
+            <Text style={styles.recipePrepTime}>Prep: {recipe.prepTime}</Text>
+          )}
         </View>
         <TouchableOpacity
           style={[styles.addButton, isSaved && styles.savedButton]}
-          onPress={() => toggleSaveRecipe(mealType, index)}
+          onPress={() => toggleSaveRecipe(recipe, mealType)}
         >
           <Text style={[styles.addButtonText, isSaved && styles.savedButtonText]}>{isSaved ? '✓' : '+'}</Text>
         </TouchableOpacity>
@@ -80,7 +82,6 @@ export default function MealRecommendationsScreen({ navigation }) {
       <View key={mealType} style={styles.mealSection}>
         <View style={styles.mealHeader}>
           <Text style={styles.mealTitle}>{mealType}</Text>
-          <Text style={styles.mealCount}>{recipes.length} options</Text>
         </View>
         
         <ScrollView 
@@ -279,6 +280,12 @@ const styles = StyleSheet.create({
   recipeCalories: {
     fontSize: 14,
     color: '#666',
+  },
+  recipePrepTime: {
+    fontSize: 12,
+    color: '#999',
+    marginTop: 4,
+    fontStyle: 'italic',
   },
   addButton: {
     backgroundColor: '#fff',

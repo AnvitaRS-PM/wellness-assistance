@@ -4,17 +4,26 @@ import { useUser } from '../context/UserContext';
 
 export default function RecipeDetailScreen({ route, navigation }) {
   const { recipe, mealType } = route.params;
-  const { updateUserData } = useUser();
-  const [saved, setSaved] = useState(false);
+  const { saveRecipe, isRecipeSaved, logMeal } = useUser();
   const [logged, setLogged] = useState(false);
 
+  const isSaved = isRecipeSaved(recipe.name, mealType);
+
   const handleSaveRecipe = () => {
-    setSaved(true);
-    Alert.alert('Success', `${recipe.name} has been saved to your recipes!`);
+    const recipeWithMealType = { ...recipe, mealType };
+    saveRecipe(recipeWithMealType);
   };
 
   const handleLogMeal = () => {
     setLogged(true);
+    // Log the meal to today's intake
+    logMeal({
+      recipeName: recipe.name,
+      mealType: mealType,
+      calories: recipe.calories,
+      nutrients: recipe.nutrients,
+      prepTime: recipe.prepTime
+    });
     navigation.navigate('LogMealConfirmation', { 
       recipeName: recipe.name, 
       mealType: mealType 
@@ -51,6 +60,9 @@ export default function RecipeDetailScreen({ route, navigation }) {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.title}>{recipe.name}</Text>
         <Text style={styles.mealType}>{mealType}</Text>
+        {recipe.prepTime && (
+          <Text style={styles.prepTime}>Prep Time: {recipe.prepTime}</Text>
+        )}
 
         {/* Ingredients Section */}
         <View style={styles.section}>
@@ -91,12 +103,12 @@ export default function RecipeDetailScreen({ route, navigation }) {
         {/* Action Buttons */}
         <View style={styles.actionsContainer}>
           <TouchableOpacity 
-            style={[styles.actionButton, saved && styles.savedActionButton]} 
+            style={[styles.actionButton, isSaved && styles.savedActionButton]} 
             onPress={handleSaveRecipe}
-            disabled={saved}
+            disabled={isSaved}
           >
-            <Text style={[styles.actionButtonText, saved && styles.savedActionButtonText]}>
-              {saved ? '✓ Saved' : 'Save Recipe'}
+            <Text style={[styles.actionButtonText, isSaved && styles.savedActionButtonText]}>
+              {isSaved ? '✓ Saved' : 'Save Recipe'}
             </Text>
           </TouchableOpacity>
 
@@ -148,6 +160,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#4A90E2',
     fontWeight: '600',
+    marginBottom: 8,
+  },
+  prepTime: {
+    fontSize: 14,
+    color: '#999',
+    fontStyle: 'italic',
     marginBottom: 24,
   },
   section: {
