@@ -3,23 +3,119 @@ import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } fr
 import { useUser } from '../context/UserContext';
 
 export default function TodaysMetricsScreen({ navigation }) {
-  const { userData } = useUser();
-  const [metricsData, setMetricsData] = useState({
-    caloriesConsumed: 1450,
-    caloriesTarget: 1800,
-    nutrients: [
-      { name: 'Protein', consumed: 65, target: 80, unit: 'g' },
-      { name: 'Carbs', consumed: 180, target: 200, unit: 'g' },
-      { name: 'Fat', consumed: 45, target: 50, unit: 'g' },
-      { name: 'Fiber', consumed: 22, target: 30, unit: 'g' },
-      { name: 'Vitamin D', consumed: 12, target: 15, unit: 'mcg' },
-      { name: 'Calcium', consumed: 850, target: 1000, unit: 'mg' },
-      { name: 'Iron', consumed: 14, target: 18, unit: 'mg' },
-      { name: 'Zinc', consumed: 8, target: 11, unit: 'mg' },
-    ],
-    daysCompleted: 15,
-    totalDays: userData?.timeline || 90,
-  });
+  const { userData, getTodaysMeals } = useUser();
+  const [metricsData, setMetricsData] = useState(null);
+
+  useEffect(() => {
+    calculateMetrics();
+  }, [userData.loggedMeals]);
+
+  const calculateDailyTargets = () => {
+    const age = parseInt(userData.age) || 30;
+    const weight = parseFloat(userData.currentWeight) || 70;
+    const goalWeight = parseFloat(userData.goalWeight) || 65;
+    const height = parseFloat(userData.height) || 170;
+    const gender = userData.gender || 'Female';
+    const daysToAchieve = parseInt(userData.daysToAchieve) || 90;
+
+    // Calculate BMR using Mifflin-St Jeor Equation
+    let bmr;
+    if (gender === 'Male') {
+      bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+    } else {
+      bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+    }
+
+    // Apply activity multiplier (assuming moderate activity)
+    const tdee = bmr * 1.55;
+
+    // Calculate calorie deficit needed
+    const weightDiff = weight - goalWeight;
+    const caloriesPerKg = 7700; // Approximate calories per kg
+    const totalCalorieDeficit = weightDiff * caloriesPerKg;
+    const dailyDeficitNeeded = totalCalorieDeficit / daysToAchieve;
+
+    // Target calories (with safe minimum)
+    let targetCalories = tdee - dailyDeficitNeeded;
+    targetCalories = Math.max(targetCalories, 1200); // Minimum 1200 calories
+
+    // Calculate macro targets (rough estimates)
+    const proteinTarget = weight * 1.6; // 1.6g per kg body weight
+    const fatTarget = (targetCalories * 0.30) / 9; // 30% of calories from fat
+    const carbsTarget = (targetCalories - (proteinTarget * 4 + fatTarget * 9)) / 4;
+    const fiberTarget = 25 + (gender === 'Male' ? 5 : 0);
+
+    return {
+      calories: Math.round(targetCalories),
+      protein: Math.round(proteinTarget),
+      carbs: Math.round(carbsTarget),
+      fat: Math.round(fatTarget),
+      fiber: Math.round(fiberTarget)
+    };
+  };
+
+  const calculateMetrics = () => {
+    const todaysMeals = getTodaysMeals();
+    const targets = calculateDailyTargets();
+
+    // Calculate totals from logged meals
+    let totalCalories = 0;
+    const nutrientTotals = {
+      'Protein': 0,
+      'Carbs': 0,
+      'Fat': 0,
+      'Fiber': 0,
+      'Vitamin A': 0,
+      'Vitamin C': 0,
+      'Vitamin D': 0,
+      'Calcium': 0,
+      'Iron': 0,
+      'Zinc': 0,
+      'Magnesium': 0
+    };
+
+    todaysMeals.forEach(meal => {
+      totalCalories += meal.calories || 0;
+      
+      if (meal.nutrients && Array.isArray(meal.nutrients)) {
+        meal.nutrients.forEach(nutrient => {
+          if (nutrientTotals.hasOwnProperty(nutrient.name)) {
+            // Parse value (e.g., "25g" -> 25)
+            const value = parseFloat(nutrient.value) || 0;
+            nutrientTotals[nutrient.name] += value;
+          }
+        });
+      }
+    });
+
+    // Map nutrients with targets
+    const nutrients = [
+      { name: 'Protein', consumed: Math.round(nutrientTotals['Protein']), target: targets.protein, unit: 'g' },
+      { name: 'Carbs', consumed: Math.round(nutrientTotals['Carbs']), target: targets.carbs, unit: 'g' },
+      { name: 'Fat', consumed: Math.round(nutrientTotals['Fat']), target: targets.fat, unit: 'g' },
+      { name: 'Fiber', consumed: Math.round(nutrientTotals['Fiber']), target: targets.fiber, unit: 'g' },
+      { name: 'Vitamin A', consumed: Math.round(nutrientTotals['Vitamin A']), target: 900, unit: 'mcg' },
+      { name: 'Vitamin C', consumed: Math.round(nutrientTotals['Vitamin C']), target: 75, unit: 'mg' },
+      { name: 'Vitamin D', consumed: Math.round(nutrientTotals['Vitamin D']), target: 15, unit: 'mcg' },
+      { name: 'Calcium', consumed: Math.round(nutrientTotals['Calcium']), target: 1000, unit: 'mg' },
+      { name: 'Iron', consumed: Math.round(nutrientTotals['Iron']), target: 18, unit: 'mg' },
+      { name: 'Zinc', consumed: Math.round(nutrientTotals['Zinc']), target: 11, unit: 'mg' },
+      { name: 'Magnesium', consumed: Math.round(nutrientTotals['Magnesium']), target: 310, unit: 'mg' },
+    ];
+
+    // Calculate days completed (simplified - in production, track actual start date)
+    const daysCompleted = 1; // Start with day 1 for new users
+    const totalDays = parseInt(userData.daysToAchieve) || 90;
+
+    setMetricsData({
+      caloriesConsumed: Math.round(totalCalories),
+      caloriesTarget: targets.calories,
+      nutrients,
+      daysCompleted,
+      totalDays,
+      mealsLogged: todaysMeals.length
+    });
+  };
 
   const calculatePercentage = (consumed, target) => {
     return Math.min((consumed / target) * 100, 100);
@@ -34,12 +130,24 @@ export default function TodaysMetricsScreen({ navigation }) {
   };
 
   const calculateGoalProgress = () => {
+    if (!metricsData) return 0;
     return ((metricsData.daysCompleted / metricsData.totalDays) * 100).toFixed(1);
   };
 
   const getDaysRemaining = () => {
+    if (!metricsData) return 0;
     return metricsData.totalDays - metricsData.daysCompleted;
   };
+
+  if (!metricsData) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.centerContent}>
+          <Text style={styles.loadingText}>Calculating your metrics...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   const caloriesDiff = calculateDifference(metricsData.caloriesConsumed, metricsData.caloriesTarget);
 
@@ -47,7 +155,12 @@ export default function TodaysMetricsScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.title}>Today's Metrics</Text>
-        <Text style={styles.subtitle}>Track your daily nutrition and progress</Text>
+        <Text style={styles.subtitle}>
+          {metricsData.mealsLogged === 0 
+            ? 'No meals logged yet today. Start logging to track your nutrition!'
+            : `Tracking ${metricsData.mealsLogged} logged meal${metricsData.mealsLogged > 1 ? 's' : ''}`
+          }
+        </Text>
 
         {/* Calories Section */}
         <View style={styles.section}>
@@ -161,13 +274,19 @@ export default function TodaysMetricsScreen({ navigation }) {
 
             <View style={styles.goalDetails}>
               <Text style={styles.goalDetailsText}>
-                Current Weight: {userData?.currentWeight || 75}kg
+                Name: {userData?.name || 'User'}, Age: {userData?.age || 'N/A'}
+              </Text>
+              <Text style={styles.goalDetailsText}>
+                Gender: {userData?.gender || 'Not specified'}
+              </Text>
+              <Text style={styles.goalDetailsText}>
+                Current Weight: {userData?.currentWeight || 70}kg
               </Text>
               <Text style={styles.goalDetailsText}>
                 Goal Weight: {userData?.goalWeight || 65}kg
               </Text>
               <Text style={styles.goalDetailsText}>
-                To Lose: {(userData?.currentWeight || 75) - (userData?.goalWeight || 65)}kg
+                To Lose: {((userData?.currentWeight || 70) - (userData?.goalWeight || 65)).toFixed(1)}kg
               </Text>
             </View>
           </View>
@@ -200,6 +319,15 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 24,
     paddingBottom: 40,
+  },
+  centerContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#666',
   },
   title: {
     fontSize: 28,
