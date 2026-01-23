@@ -4,6 +4,8 @@ import { useUser } from '../context/UserContext';
 
 export default function PersonalizationScreen({ navigation }) {
   const { updateUserData } = useUser();
+  const [name, setName] = useState('');
+  const [age, setAge] = useState('');
   const [gender, setGender] = useState('');
   const [currentWeight, setCurrentWeight] = useState('');
   const [goalWeight, setGoalWeight] = useState('');
@@ -13,17 +15,20 @@ export default function PersonalizationScreen({ navigation }) {
   const genderOptions = ['Female', 'Male', 'Transgender', 'Do not prefer to answer'];
 
   const handleContinue = () => {
-    if (!gender || !currentWeight || !goalWeight || !height || !daysToAchieve) {
+    if (!name || !age || !gender || !currentWeight || !goalWeight || !height || !daysToAchieve) {
       Alert.alert('Missing Information', 'Please fill in all fields to continue.');
       return;
     }
 
     updateUserData({
+      name,
+      age,
       gender,
       currentWeight,
       goalWeight,
       height,
-      daysToAchieve
+      daysToAchieve,
+      userId: `${name}-${age}-${Date.now()}` // Create unique user ID
     });
 
     navigation.navigate('Goals');
@@ -33,6 +38,27 @@ export default function PersonalizationScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.title}>Tell us about yourself</Text>
+
+        <View style={styles.section}>
+          <Text style={styles.label}>Name:</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Enter your name"
+            value={name}
+            onChangeText={setName}
+          />
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.label}>Age:</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder="Enter your age"
+            keyboardType="numeric"
+            value={age}
+            onChangeText={setAge}
+          />
+        </View>
 
         <View style={styles.section}>
           <Text style={styles.label}>Gender:</Text>
@@ -133,6 +159,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 12,
     color: '#333',
+  },
+  textInput: {
+    backgroundColor: '#F5F5F5',
+    borderRadius: 8,
+    padding: 14,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#D3D3D3',
   },
   genderContainer: {
     flexDirection: 'row',
