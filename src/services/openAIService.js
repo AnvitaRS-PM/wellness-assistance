@@ -42,6 +42,8 @@ export const openAIService = {
 
   buildPrompt(userData) {
     const {
+      name,
+      age,
       gender,
       currentWeight,
       goalWeight,
@@ -58,13 +60,26 @@ export const openAIService = {
       customAllergies
     } = userData;
 
-    const allGoals = [...goals, ...(customGoals ? [customGoals] : [])].join(', ');
-    const allConditions = [...conditions, ...(customConditions ? [customConditions] : [])].join(', ');
-    const allPreferences = [...foodPreferences, ...(customFoodPreferences ? [customFoodPreferences] : [])].join(', ');
-    const allAllergies = [...allergies, ...(customAllergies ? [customAllergies] : [])].join(', ');
+    // Parse comma-separated custom inputs properly
+    const parseCustomInput = (input) => {
+      if (!input) return [];
+      return input.split(',').map(item => item.trim()).filter(item => item.length > 0);
+    };
+
+    const customGoalsList = parseCustomInput(customGoals);
+    const customConditionsList = parseCustomInput(customConditions);
+    const customPreferencesList = parseCustomInput(customFoodPreferences);
+    const customAllergiesList = parseCustomInput(customAllergies);
+
+    const allGoals = [...goals, ...customGoalsList].join(', ');
+    const allConditions = [...conditions, ...customConditionsList].join(', ');
+    const allPreferences = [...foodPreferences, ...customPreferencesList].join(', ');
+    const allAllergies = [...allergies, ...customAllergiesList].join(', ');
 
     return `Create a personalized diet plan for a person with the following profile:
 
+Name: ${name || 'User'}
+Age: ${age || 'Not specified'}
 Gender: ${gender || 'Not specified'}
 Current Weight: ${currentWeight} kg
 Goal Weight: ${goalWeight} kg
@@ -102,7 +117,9 @@ IMPORTANT INSTRUCTIONS:
 3. RECOMMENDED FOODS: Focus on HEALING and THERAPEUTIC foods based on their health conditions.
    - Prioritize foods that help manage/improve their specific conditions (PCOS, diabetes, thyroid, etc.)
    - These should be foods medically beneficial for their conditions
-   - Avoid only their stated allergies/dislikes
+   - CRITICAL: Do NOT recommend ANY items listed in their Allergies/Dislikes section
+   - Exclude ALL foods from their Allergies/Dislikes list completely
+   - Consider their age and gender for age-appropriate nutritional needs
    - Do NOT just recommend foods they prefer - recommend what's BEST for their health
    - Include at least 8-10 specific food items
 
@@ -189,10 +206,21 @@ Remember: Prioritize HEALTH and HEALING over preferences. Be medically sound and
   buildMealRecommendationsPrompt(userData) {
     const { recommendations, dietType, conditions, allergies, customAllergies, foodPreferences, customFoodPreferences, goals, customGoals } = userData;
     
-    const allAllergies = [...(allergies || []), ...(customAllergies ? [customAllergies] : [])].join(', ');
-    const allConditions = [...(conditions || []), ...(userData.customConditions ? [userData.customConditions] : [])].join(', ');
-    const allGoals = [...(goals || []), ...(customGoals ? [customGoals] : [])].join(', ');
-    const allPreferences = [...(foodPreferences || []), ...(customFoodPreferences ? [customFoodPreferences] : [])].join(', ');
+    // Parse comma-separated custom inputs
+    const parseCustomInput = (input) => {
+      if (!input) return [];
+      return input.split(',').map(item => item.trim()).filter(item => item.length > 0);
+    };
+
+    const customAllergiesList = parseCustomInput(customAllergies);
+    const customConditionsList = parseCustomInput(userData.customConditions);
+    const customGoalsList = parseCustomInput(customGoals);
+    const customPreferencesList = parseCustomInput(customFoodPreferences);
+
+    const allAllergies = [...(allergies || []), ...customAllergiesList].join(', ');
+    const allConditions = [...(conditions || []), ...customConditionsList].join(', ');
+    const allGoals = [...(goals || []), ...customGoalsList].join(', ');
+    const allPreferences = [...(foodPreferences || []), ...customPreferencesList].join(', ');
 
     // Parse meal schedule to identify meal types - extract just the meal names
     const mealSchedule = recommendations?.mealSchedule || 'Breakfast, Lunch, Dinner';
@@ -236,6 +264,7 @@ RECIPE REQUIREMENTS:
    - Avoid ALL foods in the "Foods to Avoid" list
    - Avoid ALL allergies/dislikes
    - Be practical and easy to prepare
+   - Include realistic meal prep time (e.g., "10-15 mins", "20-25 mins", "30-40 mins")
    - Include complete nutrition information
 
 2. INGREDIENTS - BE DETAILED:
@@ -264,6 +293,7 @@ ${mealTypes.map((type, idx) => `  "${type}": [
     {
       "name": "Recipe name",
       "calories": 350,
+      "prepTime": "15-20 mins",
       "ingredients": ["ingredient 1", "ingredient 2", "..."],
       "nutrients": [
         {"name": "Protein", "value": "20g"},
@@ -384,8 +414,8 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
 
   getFallbackMealRecommendations() {
     // Generate 7 recipes for each of 5 meal types
-    const createRecipe = (name, calories, ingredients, nutrients, instructions) => ({
-      name, calories, ingredients, nutrients, instructions
+    const createRecipe = (name, calories, prepTime, ingredients, nutrients, instructions) => ({
+      name, calories, prepTime, ingredients, nutrients, instructions
     });
 
     const basicNutrients = [
@@ -407,6 +437,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Poached Eggs on Sprouted Grain Toast",
           "calories": 320,
+          "prepTime": "15 mins",
           "ingredients": [
             "2 large organic eggs",
             "1 slice sprouted grain ezekiel bread",
@@ -440,6 +471,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Avocado Toast with Seeds",
           "calories": 280,
+          "prepTime": "10 mins",
           "ingredients": [
             "1/2 ripe avocado, mashed",
             "1 slice whole grain bread",
@@ -474,6 +506,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Greek Yogurt Parfait",
           "calories": 290,
+          "prepTime": "8 mins",
           "ingredients": [
             "1 cup plain Greek yogurt",
             "1/2 cup mixed berries (blueberries, strawberries)",
@@ -507,6 +540,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Vegetable Omelet",
           "calories": 310,
+          "prepTime": "12 mins",
           "ingredients": [
             "3 large eggs",
             "1/2 cup baby spinach, chopped",
@@ -541,6 +575,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Oatmeal with Berries",
           "calories": 300,
+          "prepTime": "10 mins",
           "ingredients": ["1/2 cup rolled oats", "1 cup almond milk", "1/2 cup mixed berries", "1 tbsp chia seeds", "1 tsp honey"],
           "nutrients": basicNutrients,
           "instructions": ["Cook oats in almond milk for 5 minutes", "Top with berries, chia seeds, and honey", "Serve warm"]
@@ -548,6 +583,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Smoothie Bowl",
           "calories": 280,
+          "prepTime": "8 mins",
           "ingredients": ["1 frozen banana", "1/2 cup spinach", "1/2 cup berries", "1/2 cup yogurt", "Granola topping"],
           "nutrients": basicNutrients,
           "instructions": ["Blend banana, spinach, berries, and yogurt", "Pour into bowl", "Top with granola and serve"]
@@ -555,6 +591,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Whole Grain Pancakes",
           "calories": 320,
+          "prepTime": "20 mins",
           "ingredients": ["1 cup whole wheat flour", "1 egg", "3/4 cup milk", "1 tbsp honey", "Berries for topping"],
           "nutrients": basicNutrients,
           "instructions": ["Mix flour, egg, milk, and honey", "Cook on griddle until golden", "Top with berries"]
@@ -564,6 +601,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Apple with Almond Butter",
           "calories": 180,
+          "prepTime": "5 mins",
           "ingredients": ["1 medium apple, sliced", "2 tbsp almond butter"],
           "nutrients": basicNutrients,
           "instructions": ["Slice apple", "Serve with almond butter for dipping"]
@@ -571,6 +609,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Greek Yogurt with Honey",
           "calories": 150,
+          "prepTime": "3 mins",
           "ingredients": ["1 cup Greek yogurt", "1 tbsp honey", "Handful of nuts"],
           "nutrients": basicNutrients,
           "instructions": ["Place yogurt in bowl", "Drizzle with honey", "Top with nuts"]
@@ -578,6 +617,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Protein Smoothie",
           "calories": 200,
+          "prepTime": "5 mins",
           "ingredients": ["1 scoop protein powder", "1 banana", "1 cup almond milk", "Ice cubes"],
           "nutrients": basicNutrients,
           "instructions": ["Blend all ingredients until smooth", "Pour into glass and serve"]
@@ -585,6 +625,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Hummus with Veggies",
           "calories": 160,
+          "prepTime": "8 mins",
           "ingredients": ["1/4 cup hummus", "Carrot sticks", "Cucumber slices", "Bell pepper strips"],
           "nutrients": basicNutrients,
           "instructions": ["Slice vegetables", "Serve with hummus for dipping"]
@@ -592,6 +633,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Trail Mix",
           "calories": 190,
+          "prepTime": "3 mins",
           "ingredients": ["1/4 cup almonds", "1/4 cup walnuts", "2 tbsp dried cranberries", "2 tbsp dark chocolate chips"],
           "nutrients": basicNutrients,
           "instructions": ["Mix all ingredients in a bowl", "Portion into snack bag"]
@@ -599,6 +641,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Cottage Cheese with Fruit",
           "calories": 170,
+          "prepTime": "5 mins",
           "ingredients": ["1 cup cottage cheese", "1/2 cup pineapple chunks", "Sprinkle of cinnamon"],
           "nutrients": basicNutrients,
           "instructions": ["Place cottage cheese in bowl", "Top with pineapple", "Sprinkle cinnamon"]
@@ -606,6 +649,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Rice Cakes with Avocado",
           "calories": 185,
+          "prepTime": "7 mins",
           "ingredients": ["2 rice cakes", "1/2 avocado, mashed", "Cherry tomatoes", "Sea salt"],
           "nutrients": basicNutrients,
           "instructions": ["Spread avocado on rice cakes", "Top with tomato slices", "Season with salt"]
@@ -615,6 +659,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Grilled Chicken Salad Bowl",
           "calories": 380,
+          "prepTime": "25 mins",
           "ingredients": [
             "150g grilled chicken breast, sliced",
             "2 cups mixed salad greens",
@@ -649,6 +694,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Quinoa Buddha Bowl",
           "calories": 420,
+          "prepTime": "30 mins",
           "ingredients": [
             "3/4 cup cooked quinoa",
             "1/2 cup roasted chickpeas",
@@ -683,6 +729,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Salmon with Steamed Vegetables",
           "calories": 410,
+          "prepTime": "25 mins",
           "ingredients": [
             "150g wild-caught salmon fillet",
             "1 cup mixed vegetables (carrots, zucchini, bell peppers)",
@@ -717,6 +764,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Lentil and Vegetable Soup",
           "calories": 340,
+          "prepTime": "35 mins",
           "ingredients": [
             "1 cup cooked green lentils",
             "2 cups vegetable broth",
@@ -752,6 +800,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Turkey Wrap",
           "calories": 350,
+          "prepTime": "10 mins",
           "ingredients": ["Whole wheat tortilla", "100g sliced turkey", "Lettuce", "Tomato", "Avocado", "Mustard"],
           "nutrients": basicNutrients,
           "instructions": ["Layer turkey, lettuce, tomato, and avocado on tortilla", "Spread mustard", "Roll up and serve"]
@@ -759,6 +808,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Tuna Salad",
           "calories": 320,
+          "prepTime": "12 mins",
           "ingredients": ["1 can tuna", "Mixed greens", "Cherry tomatoes", "Cucumber", "Olive oil", "Lemon juice"],
           "nutrients": basicNutrients,
           "instructions": ["Drain tuna", "Mix with greens, tomatoes, and cucumber", "Dress with olive oil and lemon"]
@@ -766,6 +816,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Veggie Burger Bowl",
           "calories": 380,
+          "prepTime": "20 mins",
           "ingredients": ["1 veggie burger patty", "Quinoa", "Roasted vegetables", "Tahini sauce"],
           "nutrients": basicNutrients,
           "instructions": ["Cook veggie burger as directed", "Serve over quinoa with roasted vegetables", "Drizzle with tahini"]
@@ -775,6 +826,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Protein Bar",
           "calories": 200,
+          "prepTime": "2 mins",
           "ingredients": ["1 homemade or store-bought protein bar", "Piece of fruit"],
           "nutrients": basicNutrients,
           "instructions": ["Enjoy protein bar with fruit"]
@@ -782,6 +834,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Edamame",
           "calories": 150,
+          "prepTime": "8 mins",
           "ingredients": ["1 cup steamed edamame", "Sea salt"],
           "nutrients": basicNutrients,
           "instructions": ["Steam edamame for 5 minutes", "Sprinkle with sea salt"]
@@ -789,6 +842,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Dark Chocolate and Almonds",
           "calories": 180,
+          "prepTime": "2 mins",
           "ingredients": ["10 almonds", "2 squares dark chocolate (70% cacao)"],
           "nutrients": basicNutrients,
           "instructions": ["Enjoy almonds with dark chocolate"]
@@ -796,6 +850,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Veggie Sticks with Guacamole",
           "calories": 160,
+          "prepTime": "10 mins",
           "ingredients": ["Carrot sticks", "Celery sticks", "1/4 cup guacamole"],
           "nutrients": basicNutrients,
           "instructions": ["Cut vegetables into sticks", "Serve with guacamole"]
@@ -803,6 +858,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Boiled Eggs",
           "calories": 140,
+          "prepTime": "12 mins",
           "ingredients": ["2 hard-boiled eggs", "Pinch of paprika"],
           "nutrients": basicNutrients,
           "instructions": ["Boil eggs for 10 minutes", "Peel and season with paprika"]
@@ -810,6 +866,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Fruit and Nut Mix",
           "calories": 170,
+          "prepTime": "5 mins",
           "ingredients": ["1/2 apple, sliced", "10 cashews", "5 dried apricots"],
           "nutrients": basicNutrients,
           "instructions": ["Slice apple", "Mix with nuts and dried fruit"]
@@ -817,6 +874,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Cheese and Crackers",
           "calories": 180,
+          "prepTime": "4 mins",
           "ingredients": ["4 whole grain crackers", "2 oz cheese slices", "Grapes"],
           "nutrients": basicNutrients,
           "instructions": ["Arrange crackers with cheese", "Serve with grapes"]
@@ -826,6 +884,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Grilled Fish with Roasted Vegetables",
           "calories": 390,
+          "prepTime": "30 mins",
           "ingredients": [
             "180g white fish fillet (cod or tilapia)",
             "1 cup mixed vegetables (zucchini, bell peppers, onions)",
@@ -860,6 +919,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Chicken Stir-Fry with Brown Rice",
           "calories": 445,
+          "prepTime": "25 mins",
           "ingredients": [
             "150g chicken breast, cut into strips",
             "3/4 cup cooked brown rice",
@@ -895,6 +955,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Turkey Meatballs with Zucchini Noodles",
           "calories": 370,
+          "prepTime": "35 mins",
           "ingredients": [
             "150g ground turkey",
             "2 medium zucchinis, spiralized",
@@ -930,6 +991,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Vegetable Curry with Chickpeas",
           "calories": 400,
+          "prepTime": "30 mins",
           "ingredients": [
             "1 cup cooked chickpeas",
             "1 cup mixed vegetables (cauliflower, carrots, peas)",
@@ -965,6 +1027,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Baked Chicken with Sweet Potato",
           "calories": 420,
+          "prepTime": "35 mins",
           "ingredients": ["150g chicken breast", "1 medium sweet potato", "Olive oil", "Rosemary", "Garlic"],
           "nutrients": basicNutrients,
           "instructions": ["Season chicken with rosemary and garlic", "Bake at 400°F for 25 minutes", "Serve with baked sweet potato"]
@@ -972,6 +1035,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Shrimp Tacos",
           "calories": 390,
+          "prepTime": "20 mins",
           "ingredients": ["150g shrimp", "2 corn tortillas", "Cabbage slaw", "Avocado", "Lime", "Cilantro"],
           "nutrients": basicNutrients,
           "instructions": ["Sauté shrimp with spices", "Warm tortillas", "Fill with shrimp, slaw, and avocado"]
@@ -979,6 +1043,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         {
           "name": "Beef and Broccoli Stir-Fry",
           "calories": 410,
+          "prepTime": "22 mins",
           "ingredients": ["150g lean beef", "2 cups broccoli", "Soy sauce", "Garlic", "Ginger", "Sesame oil"],
           "nutrients": basicNutrients,
           "instructions": ["Stir-fry beef until browned", "Add broccoli, garlic, and ginger", "Season with soy sauce and sesame oil"]
