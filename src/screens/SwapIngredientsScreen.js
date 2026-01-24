@@ -12,44 +12,104 @@ export default function SwapIngredientsScreen({ route, navigation }) {
   const [calculatedCalories, setCalculatedCalories] = useState(recipe.calories);
   const [calculatedPrepTime, setCalculatedPrepTime] = useState(recipe.prepTime || '20-25 mins');
 
-  // Generate healthier ingredient swaps with detailed nutrition
+  // Generate DIFFERENT and BETTER ingredient swaps with detailed nutrition
   const generateSwaps = () => {
     const swapSuggestions = (recipe.ingredients || []).map((ingredient, index) => {
-      // Simplified swap logic - in production, use AI
-      const swapMap = {
-        'white': { replacement: 'whole wheat', fiberBoost: 3, proteinBoost: 2, carbReduction: 5 },
-        'pasta': { replacement: 'chickpea pasta', fiberBoost: 6, proteinBoost: 7, carbReduction: 8 },
-        'rice': { replacement: 'quinoa', fiberBoost: 4, proteinBoost: 4, carbReduction: 3 },
-        'sugar': { replacement: 'honey', fiberBoost: 0, proteinBoost: 0, carbReduction: 5 },
-        'butter': { replacement: 'olive oil', fiberBoost: 0, proteinBoost: 0, carbReduction: 0 },
-        'milk': { replacement: 'almond milk', fiberBoost: 1, proteinBoost: 0, carbReduction: 8 },
-      };
+      const lowerIng = ingredient.toLowerCase();
+      
+      // Comprehensive swap map with REAL alternatives
+      const swapRules = [
+        // Grains & Carbs
+        { keywords: ['white bread', 'bread', 'toast'], replacement: 'whole grain sourdough bread', calories: +15, fiber: +5, protein: +3, reason: 'Better digestion, more nutrients' },
+        { keywords: ['white rice', 'rice'], replacement: 'cauliflower rice', calories: -120, fiber: +3, protein: +1, reason: 'Lower carbs, more vegetables' },
+        { keywords: ['pasta', 'spaghetti', 'noodles'], replacement: 'zucchini noodles (zoodles)', calories: -150, fiber: +2, protein: +1, reason: 'Veggie-based, lower calories' },
+        { keywords: ['flour', 'all-purpose'], replacement: 'almond flour', calories: +50, fiber: +4, protein: +6, reason: 'Gluten-free, higher protein' },
+        { keywords: ['quinoa'], replacement: 'farro', calories: +20, fiber: +2, protein: +2, reason: 'Nuttier flavor, chewy texture' },
+        { keywords: ['oats', 'oatmeal'], replacement: 'steel-cut oats', calories: +10, fiber: +2, protein: +1, reason: 'Less processed, better texture' },
+        
+        // Proteins
+        { keywords: ['chicken breast'], replacement: 'turkey breast', calories: -10, fiber: 0, protein: +2, reason: 'Leaner, similar taste' },
+        { keywords: ['ground beef', 'beef'], replacement: 'ground turkey', calories: -50, fiber: 0, protein: +1, reason: 'Leaner, less saturated fat' },
+        { keywords: ['bacon'], replacement: 'turkey bacon', calories: -50, fiber: 0, protein: -2, reason: 'Lower fat, similar smoky flavor' },
+        { keywords: ['salmon'], replacement: 'mackerel', calories: +30, fiber: 0, protein: +3, reason: 'More omega-3s, richer flavor' },
+        { keywords: ['tuna'], replacement: 'sardines', calories: +40, fiber: 0, protein: +5, reason: 'Higher omega-3, more calcium' },
+        { keywords: ['egg', 'eggs'], replacement: 'egg whites + 1 whole egg', calories: -30, fiber: 0, protein: +2, reason: 'Less cholesterol, same protein' },
+        { keywords: ['tofu'], replacement: 'tempeh', calories: +30, fiber: +3, protein: +5, reason: 'Fermented, nuttier taste' },
+        
+        // Dairy
+        { keywords: ['whole milk', 'milk'], replacement: 'unsweetened almond milk', calories: -110, fiber: +1, protein: -7, reason: 'Lower calories, dairy-free' },
+        { keywords: ['cream', 'heavy cream'], replacement: 'coconut cream', calories: -20, fiber: +1, protein: -1, reason: 'Dairy-free, tropical flavor' },
+        { keywords: ['butter'], replacement: 'ghee', calories: +5, fiber: 0, protein: 0, reason: 'Clarified, better for high heat' },
+        { keywords: ['cheese', 'cheddar'], replacement: 'nutritional yeast', calories: -80, fiber: +2, protein: +5, reason: 'Cheesy flavor, B-vitamins' },
+        { keywords: ['yogurt', 'greek yogurt'], replacement: 'Icelandic skyr', calories: -20, fiber: 0, protein: +5, reason: 'Thicker, more protein' },
+        { keywords: ['sour cream'], replacement: 'Greek yogurt', calories: -40, fiber: 0, protein: +8, reason: 'Higher protein, probiotic' },
+        
+        // Sweeteners
+        { keywords: ['sugar', 'white sugar'], replacement: 'coconut sugar', calories: +5, fiber: +1, protein: 0, reason: 'Lower glycemic index' },
+        { keywords: ['honey'], replacement: 'maple syrup', calories: +10, fiber: 0, protein: 0, reason: 'More antioxidants, unique flavor' },
+        { keywords: ['syrup'], replacement: 'date syrup', calories: +15, fiber: +2, protein: +1, reason: 'Whole fruit sweetener, minerals' },
+        
+        // Fats & Oils
+        { keywords: ['vegetable oil', 'canola oil'], replacement: 'avocado oil', calories: +5, fiber: 0, protein: 0, reason: 'Higher smoke point, healthier fats' },
+        { keywords: ['olive oil'], replacement: 'extra virgin olive oil', calories: 0, fiber: 0, protein: 0, reason: 'More antioxidants, better quality' },
+        { keywords: ['mayonnaise', 'mayo'], replacement: 'mashed avocado', calories: -40, fiber: +4, protein: +1, reason: 'Natural fats, more nutrients' },
+        
+        // Vegetables (enhance, don't just swap)
+        { keywords: ['spinach'], replacement: 'kale', calories: +5, fiber: +2, protein: +1, reason: 'More vitamin K, heartier' },
+        { keywords: ['lettuce'], replacement: 'arugula', calories: +5, fiber: +1, protein: +1, reason: 'Peppery flavor, more nutrients' },
+        { keywords: ['potato', 'potatoes'], replacement: 'sweet potato', calories: +20, fiber: +2, protein: +1, reason: 'More vitamin A, lower GI' },
+        { keywords: ['onion', 'onions'], replacement: 'shallots', calories: +5, fiber: +1, protein: 0, reason: 'Milder, sweeter flavor' },
+        { keywords: ['bell pepper'], replacement: 'poblano pepper', calories: +5, fiber: +1, protein: 0, reason: 'Slightly spicy, richer flavor' },
+        
+        // Condiments & Seasonings
+        { keywords: ['salt', 'table salt'], replacement: 'pink Himalayan salt', calories: 0, fiber: 0, protein: 0, reason: 'Trace minerals, less processed' },
+        { keywords: ['soy sauce'], replacement: 'coconut aminos', calories: -5, fiber: 0, protein: -1, reason: 'Soy-free, lower sodium' },
+        { keywords: ['ketchup'], replacement: 'sugar-free tomato paste', calories: -30, fiber: +1, protein: +1, reason: 'No added sugar, more concentrated' },
+        { keywords: ['bbq sauce'], replacement: 'chipotle in adobo', calories: -20, fiber: +1, protein: 0, reason: 'Smoky flavor, less sugar' },
+      ];
 
-      let swapInfo = null;
-      for (const [key, value] of Object.entries(swapMap)) {
-        if (ingredient.toLowerCase().includes(key)) {
-          swapInfo = value;
+      // Find matching swap rule
+      let swapData = null;
+      for (const rule of swapRules) {
+        if (rule.keywords.some(keyword => lowerIng.includes(keyword))) {
+          swapData = rule;
           break;
         }
       }
 
-      if (!swapInfo) {
-        // Default swap for unmatched ingredients
-        return {
-          original: ingredient,
-          replacement: `Organic ${ingredient}`,
-          fiberBoost: 1,
-          proteinBoost: 1,
-          carbReduction: 2,
-          reason: 'Cleaner, more nutrient-dense option'
-        };
+      // If no specific match found, provide a generic healthy upgrade
+      if (!swapData) {
+        // Try to make an intelligent generic swap
+        if (lowerIng.includes('cup') || lowerIng.includes('tbsp') || lowerIng.includes('tsp')) {
+          // It's a measured ingredient, suggest organic version
+          return {
+            original: ingredient,
+            replacement: `organic ${ingredient}`,
+            calories: +5,
+            fiber: +1,
+            protein: 0,
+            reason: 'Pesticide-free, cleaner option'
+          };
+        } else {
+          // For other ingredients, suggest fresh/whole version
+          return {
+            original: ingredient,
+            replacement: `fresh ${ingredient}`,
+            calories: 0,
+            fiber: +1,
+            protein: 0,
+            reason: 'Fresher, less processed'
+          };
+        }
       }
 
       return {
         original: ingredient,
-        replacement: ingredient.replace(new RegExp(Object.keys(swapMap).join('|'), 'gi'), swapInfo.replacement),
-        ...swapInfo,
-        reason: 'Higher nutrition density and better for health'
+        replacement: swapData.replacement,
+        calories: swapData.calories,
+        fiber: swapData.fiber,
+        protein: swapData.protein,
+        reason: swapData.reason
       };
     });
 
@@ -91,30 +151,32 @@ export default function SwapIngredientsScreen({ route, navigation }) {
       { name: 'Fiber', value: '3g' }
     ];
 
-    // Calculate boosts based on selected swaps
-    const totalFiberBoost = swaps.reduce((sum, swap, idx) => {
-      return sum + (ingredientChoices[idx] ? swap.fiberBoost : 0);
+    // Calculate total changes based on selected swaps
+    const totalFiberChange = swaps.reduce((sum, swap, idx) => {
+      return sum + (ingredientChoices[idx] ? swap.fiber : 0);
     }, 0);
 
-    const totalProteinBoost = swaps.reduce((sum, swap, idx) => {
-      return sum + (ingredientChoices[idx] ? swap.proteinBoost : 0);
+    const totalProteinChange = swaps.reduce((sum, swap, idx) => {
+      return sum + (ingredientChoices[idx] ? swap.protein : 0);
     }, 0);
 
-    const totalCarbReduction = swaps.reduce((sum, swap, idx) => {
-      return sum + (ingredientChoices[idx] ? swap.carbReduction : 0);
+    const totalCalorieChange = swaps.reduce((sum, swap, idx) => {
+      return sum + (ingredientChoices[idx] ? swap.calories : 0);
     }, 0);
 
-    // Update nutrients
+    // Update nutrients based on changes
     const updatedNutrients = baseNutrients.map(nutrient => {
-      const value = parseInt(nutrient.value);
+      const value = parseInt(nutrient.value) || 0;
       let newValue = value;
 
       if (nutrient.name === 'Fiber') {
-        newValue = value + totalFiberBoost;
+        newValue = Math.max(1, value + totalFiberChange);
       } else if (nutrient.name === 'Protein') {
-        newValue = value + totalProteinBoost;
+        newValue = Math.max(5, value + totalProteinChange);
       } else if (nutrient.name === 'Carbs') {
-        newValue = Math.max(5, value - totalCarbReduction);
+        // Carbs might go down if swapping to lower-carb alternatives
+        const carbReduction = Math.floor(totalCalorieChange / -10); // Estimate carb reduction
+        newValue = Math.max(5, value + carbReduction);
       }
 
       return { ...nutrient, value: `${newValue}g` };
@@ -122,14 +184,16 @@ export default function SwapIngredientsScreen({ route, navigation }) {
 
     setCalculatedNutrients(updatedNutrients);
 
-    // Update calories (rough estimate: -10 cal per swap)
-    const calorieReduction = swapCount * 10;
-    setCalculatedCalories(Math.max(100, (recipe.calories || 300) - calorieReduction));
+    // Update total calories based on ingredient swaps
+    const newCalories = Math.max(100, (recipe.calories || 300) + totalCalorieChange);
+    setCalculatedCalories(newCalories);
 
-    // Update prep time (swaps might add a few minutes)
+    // Update prep time - some swaps might change prep time
     const basePrepMins = parseInt(recipe.prepTime) || 20;
-    const newPrepMins = basePrepMins + swapCount;
-    setCalculatedPrepTime(`${newPrepMins}-${newPrepMins + 5} mins`);
+    // Swaps might add or reduce time slightly
+    const timeDelta = Math.floor(swapCount / 2); // Small time adjustment
+    const newPrepMins = Math.max(5, basePrepMins + timeDelta);
+    setCalculatedPrepTime(`${newPrepMins} mins`);
   };
 
   // Generate updated instructions
