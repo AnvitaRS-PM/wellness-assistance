@@ -36,6 +36,7 @@ export default function PersonalizationScreen({ navigation }) {
   };
 
   // Check for existing user when name and DOB are both set
+  // Heavily debounced to prevent lag during typing
   useEffect(() => {
     const checkUser = async () => {
       // Skip check if we already have user data loaded
@@ -84,8 +85,8 @@ export default function PersonalizationScreen({ navigation }) {
       }
     };
 
-    // Debounce the check
-    const timeoutId = setTimeout(checkUser, 1000);
+    // Debounce the check - increased to 3 seconds to reduce lag
+    const timeoutId = setTimeout(checkUser, 3000);
     return () => clearTimeout(timeoutId);
   }, [name, dateOfBirth]);
 

@@ -54,9 +54,14 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   // Save data whenever userData changes (except initial load)
+  // Debounced to prevent excessive AsyncStorage writes
   useEffect(() => {
     if (userData.isDataLoaded && userData.name && userData.dateOfBirth) {
-      saveUserData();
+      const timeoutId = setTimeout(() => {
+        saveUserData();
+      }, 2000); // Save after 2 seconds of no changes
+      
+      return () => clearTimeout(timeoutId);
     }
   }, [userData]);
 
