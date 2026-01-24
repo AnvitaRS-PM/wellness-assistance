@@ -442,9 +442,16 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
   getFallbackMealRecommendations(userData) {
     // Extract meal types from user's diet recommendations
     const mealSchedule = userData?.recommendations?.mealSchedule || 'Breakfast, Lunch, Dinner';
+    const numberOfMeals = userData?.recommendations?.numberOfMeals || '3';
     const mealTypes = this.extractMealTypes(mealSchedule);
     
-    console.log('Generating fallback for meal types:', mealTypes);
+    console.log('====== FALLBACK MEAL GENERATION DEBUG ======');
+    console.log('User recommendations:', userData?.recommendations);
+    console.log('Number of meals from diet:', numberOfMeals);
+    console.log('Meal schedule from diet:', mealSchedule);
+    console.log('Extracted meal types:', mealTypes);
+    console.log('Number of extracted types:', mealTypes.length);
+    console.log('===========================================');
     
     // Generate 7 recipes for each of the user's actual meal types
     const createRecipe = (name, calories, prepTime, ingredients, nutrients, instructions) => ({
@@ -1084,31 +1091,15 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
       ]
     };
     
-    // Create a master recipe pool organized by type
-    const recipePool = allRecipes;
-    
-    // Build result with only the user's meal types
+    // CRITICAL FIX: Only return meal types that the user actually needs
     const result = {};
     mealTypes.forEach(mealType => {
-      const normalizedType = mealType.toLowerCase();
-      
-      // Map user's meal type to our recipe categories
-      if (normalizedType.includes('breakfast')) {
-        result[mealType] = recipePool.Breakfast || recipePool['Breakfast'];
-      } else if (normalizedType.includes('lunch')) {
-        result[mealType] = recipePool.Lunch || recipePool['Lunch'];
-      } else if (normalizedType.includes('dinner')) {
-        result[mealType] = recipePool.Dinner || recipePool['Dinner'];
-      } else if (normalizedType.includes('snack')) {
-        // Use snack recipes for any snack-related meal
-        result[mealType] = recipePool['Mid-morning snack'] || recipePool['Afternoon snack'];
-      } else {
-        // Default to breakfast recipes if unknown
-        result[mealType] = recipePool.Breakfast;
-      }
+      result[mealType] = this.generateRecipesForMealType(mealType);
     });
     
-    console.log('Fallback recommendations created for:', Object.keys(result));
+    console.log('✅ Final fallback result meal types:', Object.keys(result));
+    console.log('✅ Expected:', mealTypes.length, 'Got:', Object.keys(result).length);
+    
     return result;
-  }
+  },
 };
