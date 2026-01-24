@@ -290,14 +290,19 @@ const styles = StyleSheet.create({
     lineHeight: 20,
   },
   continueButton: {
-    backgroundColor: '#4A90E2',
-    padding: 16,
+    backgroundColor: '#A8D5BA', // Standardized theme primary color
+    padding: 10,  // Reduced from 16
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   continueButtonText: {
-    fontSize: 18,
+    fontSize: 14,  // Reduced from 18
     fontWeight: '600',
     color: '#fff',
   },

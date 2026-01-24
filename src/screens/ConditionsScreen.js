@@ -260,8 +260,8 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   continueButton: {
-    backgroundColor: '#5FD4C4',
-    padding: 16,
+    backgroundColor: '#A8D5BA', // Standardized theme primary color
+    padding: 10,  // Reduced from 16
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 10,
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   continueButtonText: {
-    fontSize: 18,
+    fontSize: 14,  // Reduced from 18
     fontWeight: '600',
     color: '#fff',
   },
