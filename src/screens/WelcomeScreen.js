@@ -1,5 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import WellnessLogo from '../components/WellnessLogo';
+import CalmTheme from '../styles/CalmTheme';
 
 export default function WelcomeScreen({ navigation }) {
   const handleContinueWithGmail = () => {
@@ -34,7 +36,13 @@ export default function WelcomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
+        {/* Logo */}
+        <View style={styles.logoContainer}>
+          <WellnessLogo size={140} color={CalmTheme.colors.primary} />
+        </View>
+        
         <Text style={styles.title}>Welcome to Wellness Assistance</Text>
+        <Text style={styles.subtitle}>Your journey to better health starts here</Text>
         
         <View style={styles.buttonGroup}>
           <TouchableOpacity style={styles.primaryButton} onPress={handleContinueWithGmail}>
@@ -84,56 +92,62 @@ export default function WelcomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: CalmTheme.colors.background,
   },
   content: {
     flex: 1,
     padding: 24,
     justifyContent: 'center',
   },
+  logoContainer: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
+    marginBottom: 8,
+    color: CalmTheme.colors.text,
+    letterSpacing: 0.3,
+  },
+  subtitle: {
+    fontSize: 16,
+    textAlign: 'center',
     marginBottom: 40,
-    color: '#333',
+    color: CalmTheme.colors.textLight,
+    lineHeight: 24,
   },
   buttonGroup: {
     marginBottom: 20,
   },
   primaryButton: {
-    backgroundColor: '#5FD4C4',
+    backgroundColor: CalmTheme.colors.primary,
     padding: 16,
-    borderRadius: 8,
+    borderRadius: CalmTheme.borderRadius.lg,
     marginBottom: 12,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 3,
-    elevation: 3,
+    ...CalmTheme.shadows.md,
   },
   primaryButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#fff',
+    color: '#FFFFFF',
+    letterSpacing: 0.5,
   },
   secondaryButton: {
-    backgroundColor: '#4A90E2',
+    backgroundColor: CalmTheme.colors.secondary,
     padding: 16,
-    borderRadius: 8,
+    borderRadius: CalmTheme.borderRadius.lg,
     alignItems: 'center',
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 3,
-    elevation: 3,
+    ...CalmTheme.shadows.md,
   },
   secondaryButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#fff',
+    color: '#FFFFFF',
+    letterSpacing: 0.5,
   },
   divider: {
     flexDirection: 'row',
@@ -143,11 +157,11 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#ccc',
+    backgroundColor: CalmTheme.colors.divider,
   },
   dividerText: {
     marginHorizontal: 10,
-    color: '#666',
+    color: CalmTheme.colors.textLighter,
     fontSize: 14,
   },
   loginContainer: {
@@ -158,22 +172,24 @@ const styles = StyleSheet.create({
   },
   loginText: {
     fontSize: 14,
-    color: '#666',
+    color: CalmTheme.colors.textLight,
   },
   loginLink: {
     fontSize: 14,
-    color: '#007AFF',
+    color: CalmTheme.colors.primary,
     fontWeight: '600',
   },
   guestButton: {
-    backgroundColor: '#D3D3D3',
+    backgroundColor: CalmTheme.colors.accent,
     padding: 16,
-    borderRadius: 8,
+    borderRadius: CalmTheme.borderRadius.lg,
     alignItems: 'center',
+    ...CalmTheme.shadows.md,
   },
   guestButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#FFFFFF',
+    letterSpacing: 0.5,
   },
 });

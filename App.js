@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { UserProvider } from './src/context/UserContext';
+import CalmTheme from './src/styles/CalmTheme';
 
 // Import screens
 import WelcomeScreen from './src/screens/WelcomeScreen';
@@ -27,83 +28,61 @@ export default function App() {
           initialRouteName="Welcome"
           screenOptions={{
             headerStyle: {
-              backgroundColor: '#4A90E2',
+              backgroundColor: CalmTheme.colors.primary,
             },
             headerTintColor: '#fff',
             headerTitleStyle: {
-              fontWeight: 'bold',
+              fontWeight: '600',
+              fontSize: 18,
             },
+            headerTitle: '', // Remove screen name from header
+            headerBackTitleVisible: false, // Remove back button title
+            headerShadowVisible: false, // Remove header shadow for cleaner look
           }}
         >
           <Stack.Screen 
             name="Welcome" 
             component={WelcomeScreen}
             options={{ 
-              title: 'Wellness Assistance',
               headerShown: false 
             }}
           />
           <Stack.Screen 
             name="Personalization" 
             component={PersonalizationScreen}
-            options={{ 
-              title: 'Personalization',
-            }}
           />
           <Stack.Screen 
             name="Goals" 
             component={GoalsScreen}
-            options={{ 
-              title: 'Your Goals',
-            }}
           />
           <Stack.Screen 
             name="Conditions" 
             component={ConditionsScreen}
-            options={{ 
-              title: 'Health & Preferences',
-            }}
           />
           <Stack.Screen 
             name="Recommendations" 
             component={RecommendationsScreen}
-            options={{ 
-              title: 'Your Diet Plan',
-            }}
           />
           <Stack.Screen 
             name="MealRecommendations" 
             component={MealRecommendationsScreen}
-            options={{ 
-              title: 'Meal Planning',
-            }}
           />
           <Stack.Screen 
             name="RecipeDetail" 
             component={RecipeDetailScreen}
-            options={{ 
-              title: 'Recipe & Nutrients',
-            }}
           />
           <Stack.Screen 
             name="LoadRecipe" 
             component={LoadRecipeScreen}
-            options={{ 
-              title: 'Load Recipe',
-            }}
           />
           <Stack.Screen 
             name="SwapIngredients" 
             component={SwapIngredientsScreen}
-            options={{ 
-              title: 'Swap Ingredients',
-            }}
           />
           <Stack.Screen 
             name="LogMealConfirmation" 
             component={LogMealConfirmationScreen}
             options={{ 
-              title: 'Meal Logged',
               presentation: 'transparentModal',
               headerShown: false,
             }}
@@ -111,16 +90,10 @@ export default function App() {
           <Stack.Screen 
             name="TodaysMetrics" 
             component={TodaysMetricsScreen}
-            options={{ 
-              title: "Today's Metrics",
-            }}
           />
           <Stack.Screen 
             name="Groceries" 
             component={GroceriesScreen}
-            options={{ 
-              title: 'Grocery List',
-            }}
           />
         </Stack.Navigator>
       </NavigationContainer>
