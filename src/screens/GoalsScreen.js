@@ -153,8 +153,8 @@ const styles = StyleSheet.create({
   },
   continueButton: {
     backgroundColor: '#A8D5BA', // Standardized theme primary color
-    padding: 10,  // Reduced from 16
-    borderRadius: 8,
+    padding: 12,  // Reasonable size
+    borderRadius: 10,
     alignItems: 'center',
     marginTop: 10,
     shadowColor: '#000',
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   continueButtonText: {
-    fontSize: 14,  // Reduced from 18
+    fontSize: 16,  // Readable size
     fontWeight: '600',
     color: '#fff',
   },

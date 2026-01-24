@@ -40,7 +40,7 @@ export const CalmTheme = {
     shadow: 'rgba(74, 85, 104, 0.1)', // Soft shadow
   },
   
-  // Typography - Further reduced (total 4px smaller from original)
+  // Typography - Moderate reduction for performance and readability
   typography: {
     fontFamily: {
       regular: 'System',
@@ -48,32 +48,32 @@ export const CalmTheme = {
       bold: 'System',
     },
     fontSize: {
-      xs: 8,       // was 12, now 8 (total -4px)
-      sm: 10,      // was 14, now 10 (total -4px)
-      base: 12,    // was 16, now 12 (total -4px)
-      lg: 14,      // was 18, now 14 (total -4px)
-      xl: 16,      // was 20, now 16 (total -4px)
-      xxl: 20,     // was 24, now 20 (total -4px)
-      xxxl: 24,    // was 28, now 24 (total -4px)
-      display: 28, // was 32, now 28 (total -4px)
+      xs: 11,      // was 12, reasonable reduction
+      sm: 13,      // was 14, reasonable reduction
+      base: 15,    // was 16, reasonable reduction
+      lg: 17,      // was 18, reasonable reduction
+      xl: 19,      // was 20, reasonable reduction
+      xxl: 22,     // was 24, reasonable reduction
+      xxxl: 26,    // was 28, reasonable reduction
+      display: 30, // was 32, reasonable reduction
     },
     lineHeight: {
-      tight: 1.15,     // was 1.25, tighter
-      normal: 1.3,     // was 1.5, tighter
-      relaxed: 1.5,    // was 1.75, tighter
+      tight: 1.2,
+      normal: 1.4,
+      relaxed: 1.6,
     },
   },
   
-  // Spacing - Further reduced (total reduction from original)
+  // Spacing - Moderate reduction for performance
   spacing: {
-    xs: 1,       // was 4, now 1
-    sm: 4,       // was 8, now 4
-    md: 8,       // was 12, now 8
-    base: 12,    // was 16, now 12
-    lg: 16,      // was 20, now 16
-    xl: 20,      // was 24, now 20
-    xxl: 24,     // was 32, now 24
-    xxxl: 32,    // was 40, now 32
+    xs: 4,       // was 4, keep reasonable
+    sm: 6,       // was 8, small reduction
+    md: 10,      // was 12, small reduction
+    base: 14,    // was 16, small reduction
+    lg: 18,      // was 20, small reduction
+    xl: 22,      // was 24, small reduction
+    xxl: 28,     // was 32, small reduction
+    xxxl: 36,    // was 40, small reduction
   },
   
   // Border radius - More rounded for calm feel
@@ -118,52 +118,52 @@ export const CalmTheme = {
     },
   },
   
-  // Component-specific styles - Further reduced
+  // Component-specific styles - Balanced for performance and space
   components: {
     button: {
       primary: {
         bg: '#A8D5BA',
         text: '#FFFFFF',
-        borderRadius: 12,        // was 16, now 12
-        paddingVertical: 10,     // was 16, now 10
-        paddingHorizontal: 16,   // was 24, now 16
+        borderRadius: 10,
+        paddingVertical: 12,
+        paddingHorizontal: 18,
       },
       secondary: {
         bg: '#B8A8D5',
         text: '#FFFFFF',
-        borderRadius: 12,        // was 16, now 12
-        paddingVertical: 10,     // was 16, now 10
-        paddingHorizontal: 16,   // was 24, now 16
+        borderRadius: 10,
+        paddingVertical: 12,
+        paddingHorizontal: 18,
       },
       accent: {
         bg: '#E8C4A8',
         text: '#FFFFFF',
-        borderRadius: 12,        // was 16, now 12
-        paddingVertical: 10,     // was 16, now 10
-        paddingHorizontal: 16,   // was 24, now 16
+        borderRadius: 10,
+        paddingVertical: 12,
+        paddingHorizontal: 18,
       },
       ghost: {
         bg: 'transparent',
         text: '#A8D5BA',
         border: '#A8D5BA',
-        borderRadius: 12,        // was 16, now 12
-        paddingVertical: 8,      // was 14, now 8
-        paddingHorizontal: 16,   // was 24, now 16
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 18,
       },
     },
     card: {
       bg: '#FDFCFB',
-      borderRadius: 12,    // was 20, now 12
-      padding: 12,         // was 20, now 12
+      borderRadius: 14,
+      padding: 14,
       shadow: 'md',
     },
     input: {
       bg: '#FFFFFF',
       border: '#E2E8F0',
       borderFocus: '#A8D5BA',
-      borderRadius: 8,            // was 12, now 8
-      paddingVertical: 8,         // was 14, now 8
-      paddingHorizontal: 10,      // was 16, now 10
+      borderRadius: 10,
+      paddingVertical: 10,
+      paddingHorizontal: 12,
     },
   },
 };

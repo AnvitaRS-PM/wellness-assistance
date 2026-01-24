@@ -369,10 +369,10 @@ const styles = StyleSheet.create({
   },
   continueButton: {
     backgroundColor: '#A8D5BA', // Standardized theme primary color
-    paddingVertical: 10,  // Reduced from 16
-    borderRadius: 8,
+    paddingVertical: 12,  // Reasonable size
+    borderRadius: 10,
     alignItems: 'center',
-    marginTop: 10,  // Reduced from 12
+    marginTop: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -381,7 +381,7 @@ const styles = StyleSheet.create({
   },
   continueButtonText: {
     color: '#fff',
-    fontSize: 14,  // Reduced from 18
+    fontSize: 16,  // Readable size
     fontWeight: '600',
   },
   infoNote: {

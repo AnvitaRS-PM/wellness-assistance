@@ -14,7 +14,7 @@ import CalmTheme from '../styles/CalmTheme';
 const OptimizedTextInput = React.memo(({
   value,
   onChangeText,
-  debounceMs = 500, // Increased from 300ms
+  debounceMs = 150, // Reduced for better responsiveness
   style,
   ...props
 }) => {
@@ -59,9 +59,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: CalmTheme.colors.border,
     borderRadius: CalmTheme.borderRadius.md,
-    paddingVertical: 10,  // Reduced from 14
-    paddingHorizontal: 12, // Reduced from 16
-    fontSize: CalmTheme.typography.fontSize.base, // Now 14 instead of 16
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    fontSize: 15, // Readable size
     color: CalmTheme.colors.text,
   },
 });
