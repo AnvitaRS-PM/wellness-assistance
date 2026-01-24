@@ -13,7 +13,11 @@ export default function GroceriesScreen({ navigation }) {
   }, [userData.savedRecipes]);
 
   const generateGroceryList = () => {
+    console.log('🛒 Generating grocery list...');
+    console.log('Saved recipes count:', userData.savedRecipes?.length || 0);
+    
     if (!userData.savedRecipes || userData.savedRecipes.length === 0) {
+      console.log('No saved recipes found');
       setGroceryItems([]);
       return;
     }
@@ -21,24 +25,47 @@ export default function GroceriesScreen({ navigation }) {
     // Aggregate ingredients from all saved recipes
     const ingredientMap = {};
     
-    userData.savedRecipes.forEach(recipe => {
+    userData.savedRecipes.forEach((recipe, recipeIndex) => {
+      console.log(`Processing recipe ${recipeIndex + 1}: ${recipe.name}`);
+      
       if (recipe.ingredients && Array.isArray(recipe.ingredients)) {
         recipe.ingredients.forEach(ingredient => {
           // Parse ingredient to extract quantity, unit, and name
           const parsed = parseIngredient(ingredient);
-          const key = parsed.name.toLowerCase();
+          const key = parsed.name.toLowerCase().trim();
+          
+          console.log(`  - Parsed: ${ingredient} → ${parsed.quantity} ${parsed.unit} ${parsed.name}`);
           
           if (ingredientMap[key]) {
             // Aggregate quantities if same ingredient and unit
-            if (ingredientMap[key].unit === parsed.unit) {
-              ingredientMap[key].quantity = (parseFloat(ingredientMap[key].quantity) + parseFloat(parsed.quantity)).toString();
-              ingredientMap[key].recipes.push(recipe.name);
+            if (ingredientMap[key].unit.toLowerCase() === parsed.unit.toLowerCase()) {
+              const oldQty = parseFloat(ingredientMap[key].quantity);
+              const newQty = parseFloat(parsed.quantity);
+              const totalQty = oldQty + newQty;
+              
+              ingredientMap[key].quantity = totalQty.toString();
+              
+              // Add recipe to list if not already there
+              if (!ingredientMap[key].recipes.includes(recipe.name)) {
+                ingredientMap[key].recipes.push(recipe.name);
+              }
+              
+              console.log(`    → Aggregated: ${oldQty} + ${newQty} = ${totalQty} ${parsed.unit}`);
             } else {
               // Different units - create separate entry
-              const newKey = `${key}_${parsed.unit}`;
+              const newKey = `${key}_${parsed.unit.toLowerCase()}`;
               if (ingredientMap[newKey]) {
-                ingredientMap[newKey].quantity = (parseFloat(ingredientMap[newKey].quantity) + parseFloat(parsed.quantity)).toString();
-                ingredientMap[newKey].recipes.push(recipe.name);
+                const oldQty = parseFloat(ingredientMap[newKey].quantity);
+                const newQty = parseFloat(parsed.quantity);
+                const totalQty = oldQty + newQty;
+                
+                ingredientMap[newKey].quantity = totalQty.toString();
+                
+                if (!ingredientMap[newKey].recipes.includes(recipe.name)) {
+                  ingredientMap[newKey].recipes.push(recipe.name);
+                }
+                
+                console.log(`    → Aggregated (${parsed.unit}): ${oldQty} + ${newQty} = ${totalQty}`);
               } else {
                 ingredientMap[newKey] = {
                   name: parsed.name,
@@ -46,6 +73,7 @@ export default function GroceriesScreen({ navigation }) {
                   unit: parsed.unit,
                   recipes: [recipe.name]
                 };
+                console.log(`    → New entry (different unit): ${parsed.quantity} ${parsed.unit}`);
               }
             }
           } else {
@@ -55,6 +83,7 @@ export default function GroceriesScreen({ navigation }) {
               unit: parsed.unit,
               recipes: [recipe.name]
             };
+            console.log(`    → New entry: ${parsed.quantity} ${parsed.unit}`);
           }
         });
       }
@@ -69,6 +98,7 @@ export default function GroceriesScreen({ navigation }) {
       recipe: item.recipes.length > 1 ? 'Multiple recipes' : item.recipes[0]
     }));
 
+    console.log(`✅ Generated ${items.length} grocery items`);
     setGroceryItems(items);
   };
 
