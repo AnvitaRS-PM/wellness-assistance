@@ -260,13 +260,18 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   backButton: {
-    backgroundColor: '#D3D3D3',
+    backgroundColor: '#FF9800',
     paddingVertical: 14,
     paddingHorizontal: 32,
     borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    elevation: 3,
   },
   backButtonText: {
-    color: '#333',
+    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },
@@ -291,7 +296,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     marginBottom: 24,
-    textAlign: 'center',
     textAlign: 'center',
   },
   mealSection: {

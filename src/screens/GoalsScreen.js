@@ -103,7 +103,6 @@ const styles = StyleSheet.create({
     color: '#666',
     marginBottom: 24,
     textAlign: 'center',
-    textAlign: 'center',
   },
   goalsGrid: {
     flexDirection: 'row',
@@ -153,15 +152,20 @@ const styles = StyleSheet.create({
     textAlignVertical: 'top',
   },
   continueButton: {
-    backgroundColor: '#D3D3D3',
+    backgroundColor: '#5FD4C4',
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
     marginTop: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 3,
+    elevation: 3,
   },
   continueButtonText: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#333',
+    color: '#fff',
   },
 });

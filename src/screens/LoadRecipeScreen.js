@@ -395,7 +395,6 @@ const styles = StyleSheet.create({
     color: '#666',
     marginBottom: 24,
     textAlign: 'center',
-    textAlign: 'center',
   },
   section: {
     marginBottom: 28,
