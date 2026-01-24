@@ -64,7 +64,7 @@ export default function GroceriesScreen({ navigation }) {
     const items = Object.values(ingredientMap).map((item, index) => ({
       id: index + 1,
       name: item.name,
-      quantity: Math.round(parseFloat(item.quantity) * 10) / 10, // Round to 1 decimal
+      quantity: (Math.round(parseFloat(item.quantity) * 10) / 10).toString(), // Round to 1 decimal and convert to string
       unit: item.unit,
       recipe: item.recipes.length > 1 ? 'Multiple recipes' : item.recipes[0]
     }));
