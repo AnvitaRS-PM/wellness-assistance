@@ -234,10 +234,71 @@ export default function GroceriesScreen({ navigation }) {
         {
           text: 'Clear All',
           style: 'destructive',
-          onPress: () => setGroceryItems([]),
+          onPress: () => {
+            setGroceryItems([]);
+            saveGroceryListToStorage([]);
+          },
         },
       ]
     );
+  };
+  
+  // Load saved grocery list from AsyncStorage
+  const loadSavedGroceryList = async () => {
+    try {
+      const saved = await AsyncStorage.getItem('grocery_list_custom_items');
+      if (saved) {
+        const customItems = JSON.parse(saved);
+        // These will be merged with recipe-generated items
+        console.log('Loaded custom grocery items:', customItems.length);
+      }
+    } catch (error) {
+      console.error('Error loading grocery list:', error);
+    }
+  };
+  
+  // Save current grocery list to AsyncStorage
+  const saveGroceryListToStorage = async (items) => {
+    try {
+      await AsyncStorage.setItem('grocery_list', JSON.stringify(items));
+      console.log('✅ Grocery list saved!');
+    } catch (error) {
+      console.error('Error saving grocery list:', error);
+    }
+  };
+  
+  // Handle save list button
+  const handleSaveList = () => {
+    saveGroceryListToStorage(groceryItems);
+    Alert.alert('Success', 'Your grocery list has been saved!');
+  };
+  
+  // Handle add new item
+  const handleAddNewItem = () => {
+    if (!newItemName.trim()) {
+      Alert.alert('Error', 'Please enter an item name');
+      return;
+    }
+    if (!newItemQuantity.trim()) {
+      Alert.alert('Error', 'Please enter a quantity');
+      return;
+    }
+    
+    const newItem = {
+      id: Date.now(),
+      name: newItemName.trim(),
+      quantity: newItemQuantity.trim(),
+      unit: newItemUnit.trim() || 'item',
+      recipe: 'Manually added'
+    };
+    
+    setGroceryItems(prev => [...prev, newItem]);
+    setNewItemName('');
+    setNewItemQuantity('');
+    setNewItemUnit('');
+    setShowAddForm(false);
+    
+    Alert.alert('Success', `${newItem.name} added to your list!`);
   };
 
   return (
@@ -259,7 +320,7 @@ export default function GroceriesScreen({ navigation }) {
             <Text style={styles.emptyStateIcon}>🛒</Text>
             <Text style={styles.emptyStateTitle}>No items in your list</Text>
             <Text style={styles.emptyStateText}>
-              Save recipes from Meal Planning to automatically generate your grocery list
+              Save recipes from Meal Planning to automatically generate your grocery list, or add items manually
             </Text>
             <TouchableOpacity
               style={styles.emptyStateButton}
@@ -267,9 +328,62 @@ export default function GroceriesScreen({ navigation }) {
             >
               <Text style={styles.emptyStateButtonText}>Go to Meal Planning</Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.emptyStateButton, styles.addItemButton]}
+              onPress={() => setShowAddForm(true)}
+            >
+              <Text style={styles.emptyStateButtonText}>+ Add Item Manually</Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <>
+            {/* Add Item Form */}
+            {showAddForm && (
+              <View style={styles.addForm}>
+                <Text style={styles.addFormTitle}>Add New Item</Text>
+                <TextInput
+                  style={styles.formInput}
+                  placeholder="Item name (e.g., Milk)"
+                  value={newItemName}
+                  onChangeText={setNewItemName}
+                />
+                <View style={styles.formRow}>
+                  <TextInput
+                    style={[styles.formInput, styles.formInputSmall]}
+                    placeholder="Quantity"
+                    value={newItemQuantity}
+                    onChangeText={setNewItemQuantity}
+                    keyboardType="numeric"
+                  />
+                  <TextInput
+                    style={[styles.formInput, styles.formInputSmall]}
+                    placeholder="Unit (e.g., cups)"
+                    value={newItemUnit}
+                    onChangeText={setNewItemUnit}
+                  />
+                </View>
+                <View style={styles.formButtons}>
+                  <TouchableOpacity
+                    style={[styles.formButton, styles.cancelButton]}
+                    onPress={() => {
+                      setShowAddForm(false);
+                      setNewItemName('');
+                      setNewItemQuantity('');
+                      setNewItemUnit('');
+                    }}
+                  >
+                    <Text style={styles.cancelButtonText}>Cancel</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.formButton, styles.addButton]}
+                    onPress={handleAddNewItem}
+                  >
+                    <Text style={styles.addButtonText}>Add Item</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+            
             {/* Group items by recipe */}
             <View style={styles.itemsContainer}>
               {groceryItems.map((item) => (
@@ -346,36 +460,56 @@ export default function GroceriesScreen({ navigation }) {
             {/* Action Buttons */}
             <View style={styles.actionsContainer}>
               <TouchableOpacity
+                style={[styles.actionButton, styles.addItemButtonSmall]}
+                onPress={() => setShowAddForm(true)}
+              >
+                <Text style={styles.actionButtonText}>➕ Add Item</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[styles.actionButton, styles.saveButton]}
+                onPress={handleSaveList}
+              >
+                <Text style={styles.actionButtonText}>💾 Save List</Text>
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.actionsContainer}>
+              <TouchableOpacity
                 style={[styles.actionButton, styles.shareButton]}
                 onPress={handleShareList}
               >
-                <Text style={styles.actionButtonText}>📤 Share List</Text>
+                <Text style={styles.actionButtonText}>📤 Share</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={[styles.actionButton, styles.clearButton]}
                 onPress={handleClearList}
               >
-                <Text style={styles.actionButtonText}>🗑️ Clear All</Text>
+                <Text style={styles.actionButtonText}>🗑️ Clear</Text>
               </TouchableOpacity>
             </View>
           </>
         )}
 
         {/* Main Action Buttons */}
-        <TouchableOpacity
-          style={styles.todaysIntakeButton}
-          onPress={() => navigation.navigate('TodaysMetrics')}
-        >
-          <Text style={styles.buttonText}>Today's Intake</Text>
-        </TouchableOpacity>
+        {groceryItems.length > 0 && (
+          <>
+            <TouchableOpacity
+              style={styles.todaysIntakeButton}
+              onPress={() => navigation.navigate('TodaysMetrics')}
+            >
+              <Text style={styles.buttonText}>Today's Intake</Text>
+            </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.mealPlanningButton}
-          onPress={() => navigation.navigate('MealRecommendations')}
-        >
-          <Text style={styles.mealPlanningButtonText}>Meal Planning</Text>
-        </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.mealPlanningButton}
+              onPress={() => navigation.navigate('MealRecommendations')}
+            >
+              <Text style={styles.mealPlanningButtonText}>Meal Planning</Text>
+            </TouchableOpacity>
+          </>
+        )}
 
         {/* Info Note */}
         <View style={styles.infoNote}>
