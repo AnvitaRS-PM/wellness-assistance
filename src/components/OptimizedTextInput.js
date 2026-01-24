@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { TextInput as RNTextInput, StyleSheet } from 'react-native';
 import CalmTheme from '../styles/CalmTheme';
 
@@ -7,35 +7,34 @@ import CalmTheme from '../styles/CalmTheme';
  * 
  * Features:
  * - Internal state management for smooth typing
- * - Debounced updates to parent component
+ * - Heavily debounced updates to parent component
  * - Memoized to prevent unnecessary re-renders
+ * - Optimized for maximum performance
  */
 const OptimizedTextInput = React.memo(({
   value,
   onChangeText,
-  debounceMs = 300,
+  debounceMs = 500, // Increased from 300ms
   style,
   ...props
 }) => {
   const [internalValue, setInternalValue] = useState(value);
-  const [timeoutId, setTimeoutId] = useState(null);
+  const timeoutRef = useRef(null);
 
   const handleChange = useCallback((text) => {
     // Update internal state immediately for smooth typing
     setInternalValue(text);
 
     // Clear previous timeout
-    if (timeoutId) {
-      clearTimeout(timeoutId);
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
 
     // Debounce updates to parent
-    const newTimeoutId = setTimeout(() => {
+    timeoutRef.current = setTimeout(() => {
       onChangeText(text);
     }, debounceMs);
-
-    setTimeoutId(newTimeoutId);
-  }, [onChangeText, debounceMs, timeoutId]);
+  }, [onChangeText, debounceMs]);
 
   // Sync internal value when prop changes externally
   React.useEffect(() => {
@@ -60,9 +59,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: CalmTheme.colors.border,
     borderRadius: CalmTheme.borderRadius.md,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    fontSize: CalmTheme.typography.fontSize.base,
+    paddingVertical: 10,  // Reduced from 14
+    paddingHorizontal: 12, // Reduced from 16
+    fontSize: CalmTheme.typography.fontSize.base, // Now 14 instead of 16
     color: CalmTheme.colors.text,
   },
 });

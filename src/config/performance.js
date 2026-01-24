@@ -1,25 +1,16 @@
 // Performance Configuration
-// Disable console logs in production for better performance
+// AGGRESSIVELY disable console logs for maximum performance
 
-if (!__DEV__) {
-  // Disable all console methods in production
-  console.log = () => {};
-  console.info = () => {};
-  console.warn = () => {};
-  console.error = () => {};
-  console.debug = () => {};
-}
+// Disable ALL console methods ALWAYS (both dev and production)
+console.log = () => {};
+console.info = () => {};
+console.warn = () => {};
+console.error = () => {};
+console.debug = () => {};
 
-// Performance monitoring helper
+// Performance monitoring helper (disabled)
 export const measurePerformance = (label, fn) => {
-  if (__DEV__) {
-    const start = Date.now();
-    const result = fn();
-    const end = Date.now();
-    console.log(`⏱️ ${label}: ${end - start}ms`);
-    return result;
-  }
-  return fn();
+  return fn(); // Just run, no logging
 };
 
 // Debounce helper for expensive operations

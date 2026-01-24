@@ -40,7 +40,7 @@ export const CalmTheme = {
     shadow: 'rgba(74, 85, 104, 0.1)', // Soft shadow
   },
   
-  // Typography
+  // Typography - Reduced by 2 sizes for better screen fit
   typography: {
     fontFamily: {
       regular: 'System',
@@ -48,32 +48,32 @@ export const CalmTheme = {
       bold: 'System',
     },
     fontSize: {
-      xs: 12,
-      sm: 14,
-      base: 16,
-      lg: 18,
-      xl: 20,
-      xxl: 24,
-      xxxl: 28,
-      display: 32,
+      xs: 10,      // was 12
+      sm: 12,      // was 14
+      base: 14,    // was 16
+      lg: 16,      // was 18
+      xl: 18,      // was 20
+      xxl: 22,     // was 24
+      xxxl: 26,    // was 28
+      display: 30, // was 32
     },
     lineHeight: {
-      tight: 1.25,
-      normal: 1.5,
-      relaxed: 1.75,
+      tight: 1.2,      // was 1.25
+      normal: 1.4,     // was 1.5
+      relaxed: 1.6,    // was 1.75
     },
   },
   
-  // Spacing (using 4px base unit)
+  // Spacing - Reduced for better screen fit
   spacing: {
-    xs: 4,
-    sm: 8,
-    md: 12,
-    base: 16,
-    lg: 20,
-    xl: 24,
-    xxl: 32,
-    xxxl: 40,
+    xs: 2,       // was 4
+    sm: 6,       // was 8
+    md: 10,      // was 12
+    base: 14,    // was 16
+    lg: 18,      // was 20
+    xl: 22,      // was 24
+    xxl: 28,     // was 32
+    xxxl: 36,    // was 40
   },
   
   // Border radius - More rounded for calm feel
@@ -118,52 +118,52 @@ export const CalmTheme = {
     },
   },
   
-  // Component-specific styles
+  // Component-specific styles - Reduced for better screen fit
   components: {
     button: {
       primary: {
         bg: '#A8D5BA',
         text: '#FFFFFF',
-        borderRadius: 16,
-        paddingVertical: 16,
-        paddingHorizontal: 24,
+        borderRadius: 14,        // was 16
+        paddingVertical: 12,     // was 16
+        paddingHorizontal: 20,   // was 24
       },
       secondary: {
         bg: '#B8A8D5',
         text: '#FFFFFF',
-        borderRadius: 16,
-        paddingVertical: 16,
-        paddingHorizontal: 24,
+        borderRadius: 14,        // was 16
+        paddingVertical: 12,     // was 16
+        paddingHorizontal: 20,   // was 24
       },
       accent: {
         bg: '#E8C4A8',
         text: '#FFFFFF',
-        borderRadius: 16,
-        paddingVertical: 16,
-        paddingHorizontal: 24,
+        borderRadius: 14,        // was 16
+        paddingVertical: 12,     // was 16
+        paddingHorizontal: 20,   // was 24
       },
       ghost: {
         bg: 'transparent',
         text: '#A8D5BA',
         border: '#A8D5BA',
-        borderRadius: 16,
-        paddingVertical: 14,
-        paddingHorizontal: 24,
+        borderRadius: 14,        // was 16
+        paddingVertical: 10,     // was 14
+        paddingHorizontal: 20,   // was 24
       },
     },
     card: {
       bg: '#FDFCFB',
-      borderRadius: 20,
-      padding: 20,
+      borderRadius: 16,    // was 20
+      padding: 16,         // was 20
       shadow: 'md',
     },
     input: {
       bg: '#FFFFFF',
       border: '#E2E8F0',
       borderFocus: '#A8D5BA',
-      borderRadius: 12,
-      paddingVertical: 14,
-      paddingHorizontal: 16,
+      borderRadius: 10,           // was 12
+      paddingVertical: 10,        // was 14
+      paddingHorizontal: 12,      // was 16
     },
   },
 };
