@@ -4,6 +4,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { UserProvider } from './src/context/UserContext';
 import CalmTheme from './src/styles/CalmTheme';
 
+// Import performance configuration (disables console logs in production)
+import './src/config/performance';
+
 // Import screens
 import WelcomeScreen from './src/screens/WelcomeScreen';
 import PersonalizationScreen from './src/screens/PersonalizationScreen';
