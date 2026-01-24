@@ -141,6 +141,25 @@ export default function MealRecommendationsScreen({ navigation }) {
             : 'Based on your personalized diet plan'}
         </Text>
 
+        {/* DEBUG INFO - Shows what's actually happening */}
+        {__DEV__ && userData.recommendations && (
+          <View style={styles.debugPanel}>
+            <Text style={styles.debugTitle}>🔍 Debug Info:</Text>
+            <Text style={styles.debugText}>
+              Diet says: {userData.recommendations.numberOfMeals}
+            </Text>
+            <Text style={styles.debugText}>
+              Meal Schedule: {userData.recommendations.mealSchedule}
+            </Text>
+            <Text style={styles.debugText}>
+              Meal types on screen: {mealRecommendations ? Object.keys(mealRecommendations).join(', ') : 'None'}
+            </Text>
+            <Text style={styles.debugText}>
+              Count: {mealRecommendations ? Object.keys(mealRecommendations).length : 0}
+            </Text>
+          </View>
+        )}
+
         {mealRecommendations && Object.keys(mealRecommendations).length > 0 ? (
           Object.entries(mealRecommendations).map(([mealType, recipes]) => 
             renderMealSection(mealType, recipes)
@@ -364,5 +383,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#fff',
+  },
+  debugPanel: {
+    backgroundColor: '#fff3cd',
+    padding: 15,
+    marginHorizontal: 20,
+    marginBottom: 20,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ffc107',
+  },
+  debugTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#856404',
+    marginBottom: 8,
+  },
+  debugText: {
+    fontSize: 12,
+    color: '#856404',
+    marginBottom: 4,
   },
 });

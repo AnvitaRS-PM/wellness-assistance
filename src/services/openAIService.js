@@ -147,17 +147,39 @@ Remember: Prioritize HEALTH and HEALING over preferences. Be medically sound and
       // Try to parse as JSON first
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
+        const parsed = JSON.parse(jsonMatch[0]);
+        
+        // VALIDATION: Ensure numberOfMeals matches mealSchedule
+        if (parsed.mealSchedule) {
+          const extractedTypes = this.extractMealTypes(parsed.mealSchedule);
+          const actualCount = extractedTypes.length;
+          
+          console.log('📊 Diet Recommendation Validation:');
+          console.log('   Meal Schedule:', parsed.mealSchedule);
+          console.log('   Extracted meal types:', extractedTypes);
+          console.log('   Actual count:', actualCount);
+          console.log('   Reported numberOfMeals:', parsed.numberOfMeals);
+          
+          // Update numberOfMeals to match actual meal types
+          parsed.numberOfMeals = `${actualCount} meal${actualCount !== 1 ? 's' : ''}`;
+          
+          if (actualCount !== extractedTypes.length) {
+            console.warn('⚠️ Corrected numberOfMeals to match mealSchedule');
+          }
+        }
+        
+        return parsed;
       }
       
-      // If not JSON, return a structured fallback
+      // If not JSON, return a structured fallback with ONLY 3 meals (not 5+)
+      console.warn('⚠️ Using fallback diet recommendations (API failed or returned invalid JSON)');
       return {
         dietType: 'Balanced Diet',
-        numberOfMeals: '3 main meals + 2-3 snacks with portion control',
-        mealSchedule: 'Morning Snack + Breakfast + Snack + Lunch + Snack + Dinner',
-        recommendedFoods: ['Lean proteins', 'Whole grains', 'Fresh vegetables', 'Fruits', 'Nuts'],
-        foodsToAvoid: ['Processed foods', 'Added sugar', 'Excessive salt'],
-        rationale: content
+        numberOfMeals: '3 meals',
+        mealSchedule: 'Breakfast (8 AM), Lunch (1 PM), Dinner (7 PM)',
+        recommendedFoods: ['Lean proteins', 'Whole grains', 'Fresh vegetables', 'Fruits', 'Nuts', 'Legumes', 'Healthy fats', 'Low-fat dairy'],
+        foodsToAvoid: ['Processed foods', 'Added sugar', 'Excessive salt', 'Trans fats', 'Refined carbs'],
+        rationale: 'A balanced diet with 3 main meals focusing on whole foods, lean proteins, and plenty of vegetables for optimal health and nutrition.'
       };
     } catch (error) {
       console.error('Parse error:', error);
