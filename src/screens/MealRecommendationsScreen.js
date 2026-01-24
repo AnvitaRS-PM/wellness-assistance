@@ -135,10 +135,26 @@ export default function MealRecommendationsScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.title}>Food Option Recommendations</Text>
-        <Text style={styles.subtitle}>Based on your personalized diet plan</Text>
+        <Text style={styles.subtitle}>
+          {userData.recommendations?.numberOfMeals 
+            ? `Your ${userData.recommendations.numberOfMeals} personalized meal plan`
+            : 'Based on your personalized diet plan'}
+        </Text>
 
-        {mealRecommendations && Object.entries(mealRecommendations).map(([mealType, recipes]) => 
-          renderMealSection(mealType, recipes)
+        {mealRecommendations && Object.keys(mealRecommendations).length > 0 ? (
+          Object.entries(mealRecommendations).map(([mealType, recipes]) => 
+            renderMealSection(mealType, recipes)
+          )
+        ) : (
+          <View style={styles.noDataContainer}>
+            <Text style={styles.noDataText}>No meal recommendations available yet.</Text>
+            <TouchableOpacity 
+              style={styles.retryButton} 
+              onPress={generateMealRecommendations}
+            >
+              <Text style={styles.retryButtonText}>Generate Recommendations</Text>
+            </TouchableOpacity>
+          </View>
         )}
 
         <View style={styles.actionButtons}>
@@ -218,6 +234,16 @@ const styles = StyleSheet.create({
     color: '#333',
     fontSize: 16,
     fontWeight: '600',
+  },
+  noDataContainer: {
+    padding: 40,
+    alignItems: 'center',
+  },
+  noDataText: {
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 20,
+    textAlign: 'center',
   },
   title: {
     fontSize: 24,

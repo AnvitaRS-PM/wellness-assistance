@@ -196,10 +196,19 @@ Remember: Prioritize HEALTH and HEALING over preferences. Be medically sound and
       );
 
       const content = response.data.choices[0].message.content;
-      return this.parseMealRecommendations(content);
+      const parsedRecommendations = this.parseMealRecommendations(content);
+      
+      // If parsing failed, use fallback with correct meal types
+      if (!parsedRecommendations) {
+        console.log('Using fallback recommendations with meal types from diet plan');
+        return this.getFallbackMealRecommendations(userData);
+      }
+      
+      return parsedRecommendations;
     } catch (error) {
       console.error('OpenAI API Error:', error.response?.data || error.message);
-      throw new Error('Failed to generate meal recommendations. Please try again.');
+      // Use fallback on error
+      return this.getFallbackMealRecommendations(userData);
     }
   },
 
@@ -395,25 +404,34 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
             .replace(/,\s*]/g, ']'); // Remove trailing commas in arrays
           
           try {
-            return JSON.parse(fixedJson);
+            const fixedParsed = JSON.parse(fixedJson);
+            console.log('Successfully parsed after fixes:', Object.keys(fixedParsed));
+            return fixedParsed;
           } catch (fixError) {
             console.error('Still cannot parse after fixes');
-            return this.getFallbackMealRecommendations();
+            // Return fallback - will be filtered to match expected meal types
+            return null; // Signal to use fallback with proper meal types
           }
         }
       }
       
-      // If not JSON, return a structured fallback
-      console.warn('No JSON found in response, using fallback');
-      return this.getFallbackMealRecommendations();
+      // If not JSON, signal to use fallback
+      console.warn('No JSON found in response, will use fallback');
+      return null;
     } catch (error) {
       console.error('Parse error:', error);
-      return this.getFallbackMealRecommendations();
+      return null;
     }
   },
 
-  getFallbackMealRecommendations() {
-    // Generate 7 recipes for each of 5 meal types
+  getFallbackMealRecommendations(userData) {
+    // Extract meal types from user's diet recommendations
+    const mealSchedule = userData?.recommendations?.mealSchedule || 'Breakfast, Lunch, Dinner';
+    const mealTypes = this.extractMealTypes(mealSchedule);
+    
+    console.log('Generating fallback for meal types:', mealTypes);
+    
+    // Generate 7 recipes for each of the user's actual meal types
     const createRecipe = (name, calories, prepTime, ingredients, nutrients, instructions) => ({
       name, calories, prepTime, ingredients, nutrients, instructions
     });
@@ -1050,5 +1068,32 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         }
       ]
     };
+    
+    // Create a master recipe pool organized by type
+    const recipePool = allRecipes;
+    
+    // Build result with only the user's meal types
+    const result = {};
+    mealTypes.forEach(mealType => {
+      const normalizedType = mealType.toLowerCase();
+      
+      // Map user's meal type to our recipe categories
+      if (normalizedType.includes('breakfast')) {
+        result[mealType] = recipePool.Breakfast || recipePool['Breakfast'];
+      } else if (normalizedType.includes('lunch')) {
+        result[mealType] = recipePool.Lunch || recipePool['Lunch'];
+      } else if (normalizedType.includes('dinner')) {
+        result[mealType] = recipePool.Dinner || recipePool['Dinner'];
+      } else if (normalizedType.includes('snack')) {
+        // Use snack recipes for any snack-related meal
+        result[mealType] = recipePool['Mid-morning snack'] || recipePool['Afternoon snack'];
+      } else {
+        // Default to breakfast recipes if unknown
+        result[mealType] = recipePool.Breakfast;
+      }
+    });
+    
+    console.log('Fallback recommendations created for:', Object.keys(result));
+    return result;
   }
 };

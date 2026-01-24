@@ -1,4 +1,5 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UserContext = createContext();
 
@@ -7,6 +8,7 @@ export const UserProvider = ({ children }) => {
     // User Identity
     userId: null,
     name: '',
+    dateOfBirth: '',
     age: '',
     
     // Screen 02 - Personalization
@@ -34,21 +36,110 @@ export const UserProvider = ({ children }) => {
     
     // Screen 06 - Meal Planning
     mealRecommendations: null,
-    savedRecipes: [], // Array of saved recipe objects with full details
+    savedRecipes: [],
     
     // Today's Metrics - Logged Meals
-    loggedMeals: [], // Array of {date, recipeName, mealType, calories, nutrients, prepTime}
-    todayDate: new Date().toDateString()
+    loggedMeals: [],
+    todayDate: new Date().toDateString(),
+    
+    // Metadata
+    lastUpdated: null,
+    isDataLoaded: false
   });
 
+  // Load user data on mount
+  useEffect(() => {
+    loadUserData();
+  }, []);
+
+  // Save data whenever userData changes (except initial load)
+  useEffect(() => {
+    if (userData.isDataLoaded && userData.name && userData.dateOfBirth) {
+      saveUserData();
+    }
+  }, [userData]);
+
+  // Generate storage key from name and DOB
+  const getStorageKey = (name, dob) => {
+    if (!name || !dob) return null;
+    return `user_${name.toLowerCase().replace(/\s+/g, '_')}_${dob}`;
+  };
+
+  // Load user data from AsyncStorage
+  const loadUserData = async () => {
+    try {
+      const keys = await AsyncStorage.getAllKeys();
+      const userKeys = keys.filter(key => key.startsWith('user_'));
+      
+      // For now, just mark as loaded. User will authenticate with name + DOB
+      setUserData(prev => ({ ...prev, isDataLoaded: true }));
+    } catch (error) {
+      console.error('Error loading user data:', error);
+      setUserData(prev => ({ ...prev, isDataLoaded: true }));
+    }
+  };
+
+  // Check if user exists and load their data
+  const checkAndLoadUser = async (name, dob) => {
+    try {
+      const key = getStorageKey(name, dob);
+      if (!key) return null;
+
+      const savedData = await AsyncStorage.getItem(key);
+      if (savedData) {
+        const parsedData = JSON.parse(savedData);
+        return parsedData;
+      }
+      return null;
+    } catch (error) {
+      console.error('Error checking user:', error);
+      return null;
+    }
+  };
+
+  // Save user data to AsyncStorage
+  const saveUserData = async () => {
+    try {
+      const key = getStorageKey(userData.name, userData.dateOfBirth);
+      if (!key) return;
+
+      const dataToSave = {
+        ...userData,
+        lastUpdated: new Date().toISOString()
+      };
+
+      await AsyncStorage.setItem(key, JSON.stringify(dataToSave));
+      console.log('User data saved successfully');
+    } catch (error) {
+      console.error('Error saving user data:', error);
+    }
+  };
+
   const updateUserData = (newData) => {
-    setUserData(prev => ({ ...prev, ...newData }));
+    setUserData(prev => ({ 
+      ...prev, 
+      ...newData,
+      lastUpdated: new Date().toISOString()
+    }));
+  };
+
+  const loadExistingUser = async (name, dob) => {
+    const existingData = await checkAndLoadUser(name, dob);
+    if (existingData) {
+      setUserData({
+        ...existingData,
+        isDataLoaded: true
+      });
+      return true;
+    }
+    return false;
   };
 
   const resetUserData = () => {
     setUserData({
       userId: null,
       name: '',
+      dateOfBirth: '',
       age: '',
       gender: '',
       currentWeight: '',
@@ -68,7 +159,9 @@ export const UserProvider = ({ children }) => {
       mealRecommendations: null,
       savedRecipes: [],
       loggedMeals: [],
-      todayDate: new Date().toDateString()
+      todayDate: new Date().toDateString(),
+      lastUpdated: null,
+      isDataLoaded: true
     });
   };
 
@@ -88,10 +181,9 @@ export const UserProvider = ({ children }) => {
   // Helper function to save a recipe
   const saveRecipe = (recipe) => {
     setUserData(prev => {
-      // Check if recipe already saved
       const exists = prev.savedRecipes.some(r => r.name === recipe.name && r.mealType === recipe.mealType);
       if (exists) {
-        return prev; // Already saved
+        return prev;
       }
       return {
         ...prev,
@@ -128,7 +220,9 @@ export const UserProvider = ({ children }) => {
       saveRecipe,
       unsaveRecipe,
       isRecipeSaved,
-      getTodaysMeals
+      getTodaysMeals,
+      checkAndLoadUser,
+      loadExistingUser
     }}>
       {children}
     </UserContext.Provider>
