@@ -1,41 +1,21 @@
 // Performance Configuration
-// AGGRESSIVELY disable console logs for maximum performance
+// COMPLETELY DISABLED - All optimizations removed for maximum speed
 
-// Disable ALL console methods ALWAYS (both dev and production)
-console.log = () => {};
-console.info = () => {};
-console.warn = () => {};
-console.error = () => {};
-console.debug = () => {};
+// DO NOTHING - Let React Native handle everything naturally
+// All previous "optimizations" were causing slowness
 
-// Performance monitoring helper (disabled)
 export const measurePerformance = (label, fn) => {
-  return fn(); // Just run, no logging
+  return fn(); // Just run, no overhead
 };
 
-// Debounce helper for expensive operations
 export const debounce = (func, wait) => {
-  let timeout;
-  return function executedFunction(...args) {
-    const later = () => {
-      clearTimeout(timeout);
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
+  // DISABLED - Just return the function as-is
+  return func;
 };
 
-// Throttle helper for scroll/touch events
 export const throttle = (func, limit) => {
-  let inThrottle;
-  return function(...args) {
-    if (!inThrottle) {
-      func.apply(this, args);
-      inThrottle = true;
-      setTimeout(() => (inThrottle = false), limit);
-    }
-  };
+  // DISABLED - Just return the function as-is
+  return func;
 };
 
 export default {

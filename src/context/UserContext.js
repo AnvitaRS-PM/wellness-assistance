@@ -54,16 +54,19 @@ export const UserProvider = ({ children }) => {
   }, []);
 
   // Save data whenever userData changes (except initial load)
-  // Moderately debounced for balance
+  // DISABLED AUTO-SAVE - Only save on explicit action
+  // This was causing massive performance issues
+  /*
   useEffect(() => {
     if (userData.isDataLoaded && userData.name && userData.dateOfBirth) {
       const timeoutId = setTimeout(() => {
         saveUserData();
-      }, 3000); // Balanced - saves after 3 seconds
+      }, 3000);
       
       return () => clearTimeout(timeoutId);
     }
   }, [userData]);
+  */
 
   // Generate storage key from name and DOB
   const getStorageKey = (name, dob) => {
@@ -127,6 +130,10 @@ export const UserProvider = ({ children }) => {
       ...newData,
       lastUpdated: new Date().toISOString()
     }));
+    // Save immediately on explicit updates
+    setTimeout(() => {
+      saveUserData();
+    }, 100);
   };
 
   const loadExistingUser = async (name, dob) => {

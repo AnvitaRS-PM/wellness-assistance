@@ -36,10 +36,11 @@ export default function PersonalizationScreen({ navigation }) {
   };
 
   // Check for existing user when name and DOB are both set
-  // Heavily debounced to prevent lag during typing
+  // DISABLED DURING TYPING - Only check on blur/continue
+  // This was causing massive lag during typing
+  /*
   useEffect(() => {
     const checkUser = async () => {
-      // Skip check if we already have user data loaded
       if (userData.name && userData.dateOfBirth && name === userData.name) {
         setIsEditingExistingUser(true);
         return;
@@ -51,7 +52,6 @@ export default function PersonalizationScreen({ navigation }) {
         const existingData = await checkAndLoadUser(name, dobString);
         
         if (existingData) {
-          // User exists! Pre-fill all data
           Alert.alert(
             'Welcome Back!',
             `We found your previous data for ${name}. Loading your information...`,
@@ -68,7 +68,6 @@ export default function PersonalizationScreen({ navigation }) {
                 onPress: async () => {
                   await loadExistingUser(name, dobString);
                   setIsEditingExistingUser(true);
-                  // Pre-fill form with loaded data
                   setGender(existingData.gender || '');
                   setCurrentWeight(existingData.currentWeight || '');
                   setGoalWeight(existingData.goalWeight || '');
@@ -85,10 +84,10 @@ export default function PersonalizationScreen({ navigation }) {
       }
     };
 
-    // Debounce the check - increased to 3 seconds to reduce lag
     const timeoutId = setTimeout(checkUser, 3000);
     return () => clearTimeout(timeoutId);
   }, [name, dateOfBirth]);
+  */
 
   // Update age when DOB changes
   useEffect(() => {
