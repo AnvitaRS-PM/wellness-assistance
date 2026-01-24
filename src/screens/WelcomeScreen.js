@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import WellnessLogo from '../components/WellnessLogo';
 import CalmTheme from '../styles/CalmTheme';
 
@@ -35,10 +35,13 @@ export default function WelcomeScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.content}>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Logo */}
         <View style={styles.logoContainer}>
-          <WellnessLogo size={140} color={CalmTheme.colors.primary} />
+          <WellnessLogo size={100} color={CalmTheme.colors.primary} />
         </View>
         
         <Text style={styles.title}>Welcome to Wellness Assistance</Text>
@@ -84,7 +87,7 @@ export default function WelcomeScreen({ navigation }) {
         <TouchableOpacity style={styles.guestButton} onPress={handleGuestUser}>
           <Text style={styles.guestButtonText}>Enter as a Guest User</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -94,17 +97,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: CalmTheme.colors.background,
   },
-  content: {
-    flex: 1,
-    padding: 24,
-    justifyContent: 'center',
+  scrollContent: {
+    flexGrow: 1,
+    padding: 20,
+    paddingTop: 40,
+    paddingBottom: 40,
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 32,
+    marginBottom: 20,
   },
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 8,
@@ -112,39 +116,39 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 14,
     textAlign: 'center',
-    marginBottom: 40,
+    marginBottom: 24,
     color: CalmTheme.colors.textLight,
-    lineHeight: 24,
+    lineHeight: 20,
   },
   buttonGroup: {
-    marginBottom: 20,
+    marginBottom: 12,
   },
   primaryButton: {
     backgroundColor: CalmTheme.colors.primary,
-    padding: 16,
+    padding: 14,
     borderRadius: CalmTheme.borderRadius.lg,
-    marginBottom: 12,
+    marginBottom: 10,
     alignItems: 'center',
     ...CalmTheme.shadows.md,
   },
   primaryButtonText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
     color: '#FFFFFF',
     letterSpacing: 0.5,
   },
   secondaryButton: {
     backgroundColor: CalmTheme.colors.secondary,
-    padding: 16,
+    padding: 14,
     borderRadius: CalmTheme.borderRadius.lg,
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
     ...CalmTheme.shadows.md,
   },
   secondaryButtonText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
     color: '#FFFFFF',
     letterSpacing: 0.5,
@@ -152,7 +156,7 @@ const styles = StyleSheet.create({
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 20,
+    marginVertical: 12,
   },
   dividerLine: {
     flex: 1,
@@ -162,32 +166,33 @@ const styles = StyleSheet.create({
   dividerText: {
     marginHorizontal: 10,
     color: CalmTheme.colors.textLighter,
-    fontSize: 14,
+    fontSize: 12,
   },
   loginContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   loginText: {
-    fontSize: 14,
+    fontSize: 13,
     color: CalmTheme.colors.textLight,
   },
   loginLink: {
-    fontSize: 14,
+    fontSize: 13,
     color: CalmTheme.colors.primary,
     fontWeight: '600',
   },
   guestButton: {
     backgroundColor: CalmTheme.colors.accent,
-    padding: 16,
+    padding: 14,
     borderRadius: CalmTheme.borderRadius.lg,
     alignItems: 'center',
+    marginBottom: 20,
     ...CalmTheme.shadows.md,
   },
   guestButtonText: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
     color: '#FFFFFF',
     letterSpacing: 0.5,
