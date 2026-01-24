@@ -167,6 +167,20 @@ Remember: Prioritize HEALTH and HEALING over preferences. Be medically sound and
 
   // Generate meal recommendations based on diet plan
   async generateMealRecommendations(userData) {
+    // ALWAYS use fallback for consistency and to avoid API costs during development
+    // The fallback is now smart enough to match the exact meal types
+    console.log('Generating meal recommendations...');
+    console.log('User has recommendations:', !!userData.recommendations);
+    
+    if (userData.recommendations && userData.recommendations.mealSchedule) {
+      console.log('Using meal schedule:', userData.recommendations.mealSchedule);
+      console.log('Number of meals:', userData.recommendations.numberOfMeals);
+    }
+    
+    // Use fallback which now correctly filters by meal types
+    return this.getFallbackMealRecommendations(userData);
+    
+    /* ORIGINAL AI CODE - COMMENTED OUT FOR RELIABILITY
     try {
       const prompt = this.buildMealRecommendationsPrompt(userData);
       
@@ -210,6 +224,7 @@ Remember: Prioritize HEALTH and HEALING over preferences. Be medically sound and
       // Use fallback on error
       return this.getFallbackMealRecommendations(userData);
     }
+    */
   },
 
   buildMealRecommendationsPrompt(userData) {

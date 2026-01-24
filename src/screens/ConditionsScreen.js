@@ -3,14 +3,14 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Scro
 import { useUser } from '../context/UserContext';
 
 export default function ConditionsScreen({ navigation }) {
-  const { updateUserData } = useUser();
-  const [selectedConditions, setSelectedConditions] = useState([]);
-  const [customConditions, setCustomConditions] = useState('');
-  const [dietType, setDietType] = useState('');
-  const [selectedFoodPreferences, setSelectedFoodPreferences] = useState([]);
-  const [customFoodPreferences, setCustomFoodPreferences] = useState('');
-  const [selectedAllergies, setSelectedAllergies] = useState([]);
-  const [customAllergies, setCustomAllergies] = useState('');
+  const { updateUserData, userData } = useUser();
+  const [selectedConditions, setSelectedConditions] = useState(userData.conditions || []);
+  const [customConditions, setCustomConditions] = useState(userData.customConditions || '');
+  const [dietType, setDietType] = useState(userData.dietType || '');
+  const [selectedFoodPreferences, setSelectedFoodPreferences] = useState(userData.foodPreferences || []);
+  const [customFoodPreferences, setCustomFoodPreferences] = useState(userData.customFoodPreferences || '');
+  const [selectedAllergies, setSelectedAllergies] = useState(userData.allergies || []);
+  const [customAllergies, setCustomAllergies] = useState(userData.customAllergies || '');
 
   const conditionOptions = ['Hypothyroid', 'PCOS', 'Diabetes', 'Digestive Issues', 'Hypertension', 'No Conditions'];
   const dietOptions = ['Non-Vegetarian', 'Vegetarian', 'Vegan', 'Pescatarian'];
@@ -26,6 +26,7 @@ export default function ConditionsScreen({ navigation }) {
   };
 
   const handleContinue = () => {
+    // Clear recommendations when conditions/preferences change
     updateUserData({
       conditions: selectedConditions,
       customConditions,
@@ -33,7 +34,9 @@ export default function ConditionsScreen({ navigation }) {
       foodPreferences: selectedFoodPreferences,
       customFoodPreferences,
       allergies: selectedAllergies,
-      customAllergies
+      customAllergies,
+      recommendations: null,  // Clear to force regeneration
+      mealRecommendations: null  // Clear to force regeneration
     });
     navigation.navigate('Recommendations');
   };

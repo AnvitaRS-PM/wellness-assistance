@@ -5,16 +5,19 @@ import { useUser } from '../context/UserContext';
 
 export default function PersonalizationScreen({ navigation }) {
   const { updateUserData, checkAndLoadUser, loadExistingUser, userData } = useUser();
-  const [name, setName] = useState('');
-  const [dateOfBirth, setDateOfBirth] = useState(new Date());
+  const [name, setName] = useState(userData.name || '');
+  const [dateOfBirth, setDateOfBirth] = useState(
+    userData.dateOfBirth ? new Date(userData.dateOfBirth) : new Date()
+  );
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [age, setAge] = useState('');
-  const [gender, setGender] = useState('');
-  const [currentWeight, setCurrentWeight] = useState('');
-  const [goalWeight, setGoalWeight] = useState('');
-  const [height, setHeight] = useState('');
-  const [daysToAchieve, setDaysToAchieve] = useState('');
+  const [age, setAge] = useState(userData.age || '');
+  const [gender, setGender] = useState(userData.gender || '');
+  const [currentWeight, setCurrentWeight] = useState(userData.currentWeight || '');
+  const [goalWeight, setGoalWeight] = useState(userData.goalWeight || '');
+  const [height, setHeight] = useState(userData.height || '');
+  const [daysToAchieve, setDaysToAchieve] = useState(userData.daysToAchieve || '');
   const [isCheckingUser, setIsCheckingUser] = useState(false);
+  const [isEditingExistingUser, setIsEditingExistingUser] = useState(false);
 
   const genderOptions = ['Female', 'Male', 'Transgender', 'Do not prefer to answer'];
 
@@ -35,7 +38,13 @@ export default function PersonalizationScreen({ navigation }) {
   // Check for existing user when name and DOB are both set
   useEffect(() => {
     const checkUser = async () => {
-      if (name && dateOfBirth && !isCheckingUser) {
+      // Skip check if we already have user data loaded
+      if (userData.name && userData.dateOfBirth && name === userData.name) {
+        setIsEditingExistingUser(true);
+        return;
+      }
+
+      if (name && dateOfBirth && !isCheckingUser && !isEditingExistingUser) {
         setIsCheckingUser(true);
         const dobString = dateOfBirth.toISOString().split('T')[0];
         const existingData = await checkAndLoadUser(name, dobString);
@@ -57,14 +66,13 @@ export default function PersonalizationScreen({ navigation }) {
                 text: 'Load My Data',
                 onPress: async () => {
                   await loadExistingUser(name, dobString);
-                  // Navigate directly to appropriate screen based on data completeness
-                  if (existingData.recommendations) {
-                    navigation.navigate('MealRecommendations');
-                  } else if (existingData.goals && existingData.goals.length > 0) {
-                    navigation.navigate('Conditions');
-                  } else {
-                    navigation.navigate('Goals');
-                  }
+                  setIsEditingExistingUser(true);
+                  // Pre-fill form with loaded data
+                  setGender(existingData.gender || '');
+                  setCurrentWeight(existingData.currentWeight || '');
+                  setGoalWeight(existingData.goalWeight || '');
+                  setHeight(existingData.height || '');
+                  setDaysToAchieve(existingData.daysToAchieve || '');
                   setIsCheckingUser(false);
                 }
               }
@@ -111,6 +119,14 @@ export default function PersonalizationScreen({ navigation }) {
     const calculatedAge = calculateAge(dateOfBirth);
     const dobString = dateOfBirth.toISOString().split('T')[0];
 
+    // Check if key personalization data changed
+    const dataChanged = 
+      currentWeight !== userData.currentWeight ||
+      goalWeight !== userData.goalWeight ||
+      height !== userData.height ||
+      daysToAchieve !== userData.daysToAchieve ||
+      gender !== userData.gender;
+
     updateUserData({
       name,
       dateOfBirth: dobString,
@@ -120,7 +136,9 @@ export default function PersonalizationScreen({ navigation }) {
       goalWeight,
       height,
       daysToAchieve,
-      userId: `${name}-${dobString}` // Create unique user ID from name + DOB
+      userId: `${name}-${dobString}`,
+      // Clear recommendations if key data changed
+      ...(dataChanged ? { recommendations: null, mealRecommendations: null } : {})
     });
 
     navigation.navigate('Goals');

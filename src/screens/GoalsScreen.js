@@ -3,9 +3,9 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, Scro
 import { useUser } from '../context/UserContext';
 
 export default function GoalsScreen({ navigation }) {
-  const { updateUserData } = useUser();
-  const [selectedGoals, setSelectedGoals] = useState([]);
-  const [customGoals, setCustomGoals] = useState('');
+  const { updateUserData, userData } = useUser();
+  const [selectedGoals, setSelectedGoals] = useState(userData.goals || []);
+  const [customGoals, setCustomGoals] = useState(userData.customGoals || '');
 
   const goalOptions = [
     'Lose Weight',
@@ -27,9 +27,12 @@ export default function GoalsScreen({ navigation }) {
   };
 
   const handleContinue = () => {
+    // Clear recommendations when goals change - forces regeneration
     updateUserData({
       goals: selectedGoals,
-      customGoals: customGoals
+      customGoals: customGoals,
+      recommendations: null,  // Clear to force regeneration
+      mealRecommendations: null  // Clear to force regeneration
     });
     navigation.navigate('Conditions');
   };
