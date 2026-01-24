@@ -388,11 +388,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
     color: '#333',
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
     color: '#666',
     marginBottom: 24,
+    textAlign: 'center',
+    textAlign: 'center',
   },
   section: {
     marginBottom: 28,

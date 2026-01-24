@@ -208,6 +208,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
     color: '#333',
     textDecorationLine: 'underline',
+    textAlign: 'center',
   },
   card: {
     backgroundColor: '#F8F9FA',
@@ -243,6 +244,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     fontStyle: 'italic',
     lineHeight: 18,
+    textAlign: 'center',
   },
   listItem: {
     flexDirection: 'row',

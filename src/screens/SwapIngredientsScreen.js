@@ -414,6 +414,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     marginBottom: 8,
+    textAlign: 'center',
   },
   originalPrepTime: {
     fontSize: 13,
