@@ -83,7 +83,7 @@ export const UserProvider = ({ children }) => {
       // For now, just mark as loaded. User will authenticate with name + DOB
       setUserData(prev => ({ ...prev, isDataLoaded: true }));
     } catch (error) {
-      console.error('Error loading user data:', error);
+      // Silent fail
       setUserData(prev => ({ ...prev, isDataLoaded: true }));
     }
   };
@@ -101,7 +101,7 @@ export const UserProvider = ({ children }) => {
       }
       return null;
     } catch (error) {
-      console.error('Error checking user:', error);
+      // Silent fail
       return null;
     }
   };
@@ -118,9 +118,9 @@ export const UserProvider = ({ children }) => {
       };
 
       await AsyncStorage.setItem(key, JSON.stringify(dataToSave));
-      console.log('User data saved successfully');
+      // Silent success
     } catch (error) {
-      console.error('Error saving user data:', error);
+      // Silent fail
     }
   };
 
@@ -130,10 +130,8 @@ export const UserProvider = ({ children }) => {
       ...newData,
       lastUpdated: new Date().toISOString()
     }));
-    // Save immediately on explicit updates
-    setTimeout(() => {
-      saveUserData();
-    }, 100);
+    // DISABLED SAVE - No AsyncStorage operations
+    // Save only happens manually
   };
 
   const loadExistingUser = async (name, dob) => {
