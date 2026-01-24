@@ -1,16 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUser } from '../context/UserContext';
 
 export default function GroceriesScreen({ navigation }) {
   const { userData } = useUser();
   const [groceryItems, setGroceryItems] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newItemName, setNewItemName] = useState('');
+  const [newItemQuantity, setNewItemQuantity] = useState('');
+  const [newItemUnit, setNewItemUnit] = useState('');
 
   // Generate grocery list from saved recipes
   useEffect(() => {
     generateGroceryList();
   }, [userData.savedRecipes]);
+  
+  // Load saved custom items on mount
+  useEffect(() => {
+    loadSavedGroceryList();
+  }, []);
 
   const generateGroceryList = () => {
     console.log('🛒 Generating grocery list...');

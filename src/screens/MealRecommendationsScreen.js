@@ -54,10 +54,15 @@ export default function MealRecommendationsScreen({ navigation }) {
 
     return (
       <TouchableOpacity 
-        key={index}
+        key={`${mealType}-${index}`}
         style={styles.recipeCard}
         onPress={() => handleRecipePress(recipe, mealType)}
       >
+        {recipe.isCustom && (
+          <View style={styles.customLabel}>
+            <Text style={styles.customLabelText}>Your Recipe</Text>
+          </View>
+        )}
         <View style={styles.recipeContent}>
           <Text style={styles.recipeName}>{recipe.name}</Text>
           <Text style={styles.recipeCalories}>Calories: {recipe.calories} Kcal</Text>
@@ -76,12 +81,23 @@ export default function MealRecommendationsScreen({ navigation }) {
   };
 
   const renderMealSection = (mealType, recipes) => {
-    if (!recipes || recipes.length === 0) return null;
+    // Merge AI recipes with custom recipes for this meal type
+    const customRecipesForMeal = userData.customRecipes[mealType] || [];
+    const allRecipes = [...recipes, ...customRecipesForMeal];
+    
+    if (!allRecipes || allRecipes.length === 0) return null;
 
     return (
       <View key={mealType} style={styles.mealSection}>
         <View style={styles.mealHeader}>
           <Text style={styles.mealTitle}>{mealType}</Text>
+          {customRecipesForMeal.length > 0 && (
+            <View style={styles.customBadge}>
+              <Text style={styles.customBadgeText}>
+                +{customRecipesForMeal.length} custom
+              </Text>
+            </View>
+          )}
         </View>
         
         <ScrollView 
@@ -93,7 +109,7 @@ export default function MealRecommendationsScreen({ navigation }) {
           snapToInterval={216}
           snapToAlignment="start"
         >
-          {recipes.map((recipe, index) => renderRecipeCard(recipe, mealType, index))}
+          {allRecipes.map((recipe, index) => renderRecipeCard(recipe, mealType, index))}
         </ScrollView>
       </View>
     );
@@ -284,10 +300,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
   },
+  customBadge: {
+    backgroundColor: '#FF6B6B',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  customBadgeText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: '700',
+  },
   mealTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
+  },
+  customLabel: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: '#FF6B6B',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+    zIndex: 10,
+  },
+  customLabelText: {
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: '700',
   },
   mealCount: {
     fontSize: 14,

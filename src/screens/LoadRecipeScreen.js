@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Image, Alert } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import { useUser } from '../context/UserContext';
+import MealTypePicker from '../components/MealTypePicker';
 
 export default function LoadRecipeScreen({ navigation }) {
   const { userData, saveRecipe } = useUser();
@@ -260,17 +260,11 @@ export default function LoadRecipeScreen({ navigation }) {
         {/* Meal Type Selection */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Meal Type</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={selectedMealType}
-              onValueChange={(itemValue) => setSelectedMealType(itemValue)}
-              style={styles.picker}
-            >
-              {mealTypes.map((type, idx) => (
-                <Picker.Item key={idx} label={type} value={type} />
-              ))}
-            </Picker>
-          </View>
+          <MealTypePicker
+            selectedValue={selectedMealType}
+            onValueChange={setSelectedMealType}
+            mealTypes={mealTypes}
+          />
         </View>
 
         {/* Recipe Image */}
