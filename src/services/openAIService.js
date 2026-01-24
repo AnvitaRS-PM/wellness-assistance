@@ -688,7 +688,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
           "name": "Hummus with Veggies",
           "calories": 160,
           "prepTime": "8 mins",
-          "ingredients": ["1/4 cup hummus", "Carrot sticks", "Cucumber slices", "Bell pepper strips"],
+          "ingredients": ["1/4 cup hummus", "3 medium carrots, cut into sticks", "1 medium cucumber, sliced", "1 bell pepper, cut into strips"],
           "nutrients": basicNutrients,
           "instructions": ["Slice vegetables", "Serve with hummus for dipping"]
         },
@@ -712,7 +712,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
           "name": "Rice Cakes with Avocado",
           "calories": 185,
           "prepTime": "7 mins",
-          "ingredients": ["2 rice cakes", "1/2 avocado, mashed", "Cherry tomatoes", "Sea salt"],
+          "ingredients": ["2 rice cakes", "1/2 avocado, mashed", "4 cherry tomatoes, halved", "Pinch of sea salt"],
           "nutrients": basicNutrients,
           "instructions": ["Spread avocado on rice cakes", "Top with tomato slices", "Season with salt"]
         }
@@ -724,12 +724,13 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
           "prepTime": "25 mins",
           "ingredients": [
             "150g grilled chicken breast, sliced",
-            "2 cups mixed salad greens",
+            "1 cup baby spinach",
+            "1 cup romaine lettuce, chopped",
             "1/2 cup cherry tomatoes, halved",
-            "1/4 cucumber, sliced",
+            "1/4 medium cucumber, sliced",
             "2 tbsp balsamic vinaigrette",
             "1 tbsp pumpkin seeds",
-            "Fresh herbs (basil or mint)"
+            "2 tbsp fresh basil, chopped"
           ],
           "nutrients": [
             {"name": "Protein", "value": "35g"},
@@ -748,7 +749,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
             "Season chicken breast with salt, pepper, and herbs",
             "Grill chicken on medium-high heat for 5-6 minutes per side",
             "Let chicken rest for 5 minutes, then slice into strips",
-            "Arrange mixed greens in a large bowl",
+            "Arrange spinach and romaine lettuce in a large bowl",
             "Top with cherry tomatoes, cucumber, and sliced chicken",
             "Drizzle with balsamic vinaigrette, sprinkle pumpkin seeds and serve"
           ]
@@ -794,7 +795,9 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
           "prepTime": "25 mins",
           "ingredients": [
             "150g wild-caught salmon fillet",
-            "1 cup mixed vegetables (carrots, zucchini, bell peppers)",
+            "1/2 cup diced carrots",
+            "1/2 cup diced zucchini",
+            "1/3 cup diced bell peppers",
             "1 tbsp olive oil",
             "1 tsp fresh dill",
             "1 clove garlic, minced",
@@ -913,7 +916,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
           "name": "Veggie Sticks with Guacamole",
           "calories": 160,
           "prepTime": "10 mins",
-          "ingredients": ["Carrot sticks", "Celery sticks", "1/4 cup guacamole"],
+          "ingredients": ["2 medium carrots, cut into sticks", "2 celery stalks, cut into sticks", "1/4 cup guacamole"],
           "nutrients": basicNutrients,
           "instructions": ["Cut vegetables into sticks", "Serve with guacamole"]
         },
@@ -937,7 +940,7 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
           "name": "Cheese and Crackers",
           "calories": 180,
           "prepTime": "4 mins",
-          "ingredients": ["4 whole grain crackers", "2 oz cheese slices", "Grapes"],
+          "ingredients": ["4 whole grain crackers", "2 oz cheddar cheese slices", "1/2 cup red grapes"],
           "nutrients": basicNutrients,
           "instructions": ["Arrange crackers with cheese", "Serve with grapes"]
         }
@@ -949,12 +952,14 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
           "prepTime": "30 mins",
           "ingredients": [
             "180g white fish fillet (cod or tilapia)",
-            "1 cup mixed vegetables (zucchini, bell peppers, onions)",
+            "1/2 cup zucchini, diced",
+            "1/2 cup bell peppers (red and yellow), diced",
+            "1/4 cup red onion, sliced",
             "2 tbsp olive oil",
             "1 tsp paprika",
             "1 tsp garlic powder",
-            "Fresh lemon juice",
-            "Fresh parsley, chopped"
+            "1 tbsp fresh lemon juice",
+            "2 tbsp fresh parsley, chopped"
           ],
           "nutrients": [
             {"name": "Protein", "value": "38g"},
@@ -985,7 +990,9 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
           "ingredients": [
             "150g chicken breast, cut into strips",
             "3/4 cup cooked brown rice",
-            "1 cup mixed stir-fry vegetables",
+            "1/2 cup broccoli florets",
+            "1/3 cup sliced carrots",
+            "1/4 cup snap peas",
             "2 tbsp low-sodium soy sauce",
             "1 tbsp sesame oil",
             "2 cloves garlic, minced",
@@ -1056,13 +1063,15 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
           "prepTime": "30 mins",
           "ingredients": [
             "1 cup cooked chickpeas",
-            "1 cup mixed vegetables (cauliflower, carrots, peas)",
+            "1/2 cup cauliflower florets",
+            "1/3 cup diced carrots",
+            "1/4 cup green peas",
             "1/2 cup coconut milk (light)",
             "1 tbsp curry powder",
             "1 tsp turmeric",
             "2 cloves garlic, minced",
             "1 tsp grated ginger",
-            "Fresh cilantro for garnish"
+            "2 tbsp fresh cilantro, chopped"
           ],
           "nutrients": [
             {"name": "Protein", "value": "16g"},

@@ -1,23 +1,136 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, SafeAreaView, ScrollView, Alert } from 'react-native';
+import { useUser } from '../context/UserContext';
 
 export default function GroceriesScreen({ navigation }) {
-  const [groceryItems, setGroceryItems] = useState([
-    { id: 1, name: 'Eggs', quantity: '6', unit: 'whole', recipe: 'Eggs Poached + Toast' },
-    { id: 2, name: 'Multigrain Bread', quantity: '4', unit: 'slices', recipe: 'Eggs Poached + Toast' },
-    { id: 3, name: 'Sprouted Grain', quantity: '50', unit: 'g', recipe: 'Eggs Poached + Toast' },
-    { id: 4, name: 'Chicken Breast', quantity: '200', unit: 'g', recipe: 'Grilled Chicken Salad' },
-    { id: 5, name: 'Mixed Greens', quantity: '150', unit: 'g', recipe: 'Grilled Chicken Salad' },
-    { id: 6, name: 'Cherry Tomatoes', quantity: '100', unit: 'g', recipe: 'Grilled Chicken Salad' },
-    { id: 7, name: 'Quinoa', quantity: '100', unit: 'g', recipe: 'Quinoa Bowl' },
-    { id: 8, name: 'Black Beans', quantity: '150', unit: 'g', recipe: 'Quinoa Bowl' },
-    { id: 9, name: 'Avocado', quantity: '1', unit: 'whole', recipe: 'Quinoa Bowl' },
-    { id: 10, name: 'Olive Oil', quantity: '30', unit: 'ml', recipe: 'Multiple recipes' },
-    { id: 11, name: 'Lemon', quantity: '2', unit: 'whole', recipe: 'Multiple recipes' },
-    { id: 12, name: 'Garlic', quantity: '6', unit: 'cloves', recipe: 'Multiple recipes' },
-  ]);
-
+  const { userData } = useUser();
+  const [groceryItems, setGroceryItems] = useState([]);
   const [editingId, setEditingId] = useState(null);
+
+  // Generate grocery list from saved recipes
+  useEffect(() => {
+    generateGroceryList();
+  }, [userData.savedRecipes]);
+
+  const generateGroceryList = () => {
+    if (!userData.savedRecipes || userData.savedRecipes.length === 0) {
+      setGroceryItems([]);
+      return;
+    }
+
+    // Aggregate ingredients from all saved recipes
+    const ingredientMap = {};
+    
+    userData.savedRecipes.forEach(recipe => {
+      if (recipe.ingredients && Array.isArray(recipe.ingredients)) {
+        recipe.ingredients.forEach(ingredient => {
+          // Parse ingredient to extract quantity, unit, and name
+          const parsed = parseIngredient(ingredient);
+          const key = parsed.name.toLowerCase();
+          
+          if (ingredientMap[key]) {
+            // Aggregate quantities if same ingredient and unit
+            if (ingredientMap[key].unit === parsed.unit) {
+              ingredientMap[key].quantity = (parseFloat(ingredientMap[key].quantity) + parseFloat(parsed.quantity)).toString();
+              ingredientMap[key].recipes.push(recipe.name);
+            } else {
+              // Different units - create separate entry
+              const newKey = `${key}_${parsed.unit}`;
+              if (ingredientMap[newKey]) {
+                ingredientMap[newKey].quantity = (parseFloat(ingredientMap[newKey].quantity) + parseFloat(parsed.quantity)).toString();
+                ingredientMap[newKey].recipes.push(recipe.name);
+              } else {
+                ingredientMap[newKey] = {
+                  name: parsed.name,
+                  quantity: parsed.quantity,
+                  unit: parsed.unit,
+                  recipes: [recipe.name]
+                };
+              }
+            }
+          } else {
+            ingredientMap[key] = {
+              name: parsed.name,
+              quantity: parsed.quantity,
+              unit: parsed.unit,
+              recipes: [recipe.name]
+            };
+          }
+        });
+      }
+    });
+
+    // Convert map to array
+    const items = Object.values(ingredientMap).map((item, index) => ({
+      id: index + 1,
+      name: item.name,
+      quantity: Math.round(parseFloat(item.quantity) * 10) / 10, // Round to 1 decimal
+      unit: item.unit,
+      recipe: item.recipes.length > 1 ? 'Multiple recipes' : item.recipes[0]
+    }));
+
+    setGroceryItems(items);
+  };
+
+  // Parse ingredient string to extract quantity, unit, and name
+  const parseIngredient = (ingredient) => {
+    // Common patterns:
+    // "150g chicken breast" -> quantity: 150, unit: g, name: chicken breast
+    // "2 cups spinach" -> quantity: 2, unit: cups, name: spinach
+    // "1/2 avocado" -> quantity: 0.5, unit: whole, name: avocado
+    // "Salt and pepper" -> quantity: 1, unit: pinch, name: Salt and pepper
+    
+    const patterns = [
+      // Pattern: "150g chicken"
+      /^(\d+\.?\d*)\s*([a-z]+)\s+(.+)$/i,
+      // Pattern: "2 cups spinach"
+      /^(\d+\.?\d*)\s+(cup|cups|tbsp|tsp|teaspoon|tablespoon|oz|lb|lbs)\s+(.+)$/i,
+      // Pattern: "1/2 avocado"
+      /^(\d+\/\d+)\s+(.+)$/,
+      // Pattern: "2 medium carrots"
+      /^(\d+)\s+(small|medium|large|whole|cloves?|slices?|stalks?)\s+(.+)$/i,
+    ];
+
+    for (const pattern of patterns) {
+      const match = ingredient.match(pattern);
+      if (match) {
+        let quantity = match[1];
+        
+        // Handle fractions
+        if (quantity.includes('/')) {
+          const parts = quantity.split('/');
+          quantity = (parseFloat(parts[0]) / parseFloat(parts[1])).toString();
+        }
+        
+        // For pattern 1 (150g chicken), unit is match[2], name is match[3]
+        // For pattern 2 (2 cups), unit is match[2], name is match[3]
+        // For pattern 3 (1/2 avocado), unit is 'whole', name is match[2]
+        // For pattern 4 (2 medium carrots), unit is match[2], name is match[3]
+        
+        if (pattern === patterns[2]) {
+          // Pattern 3: fraction without unit
+          return {
+            quantity: quantity,
+            unit: 'whole',
+            name: match[2]
+          };
+        } else {
+          return {
+            quantity: quantity,
+            unit: match[2],
+            name: match[3] || match[2]
+          };
+        }
+      }
+    }
+
+    // If no pattern matches, return whole ingredient as name
+    return {
+      quantity: '1',
+      unit: 'item',
+      name: ingredient
+    };
+  };
 
   const handleEditStart = (id) => {
     setEditingId(id);
