@@ -37,6 +37,7 @@ export const UserProvider = ({ children }) => {
     // Screen 06 - Meal Planning
     mealRecommendations: null,
     savedRecipes: [],
+    customRecipes: {}, // Stores user-loaded recipes by mealType
     
     // Today's Metrics - Logged Meals
     loggedMeals: [],
@@ -158,6 +159,7 @@ export const UserProvider = ({ children }) => {
       recommendations: null,
       mealRecommendations: null,
       savedRecipes: [],
+      customRecipes: {},
       loggedMeals: [],
       todayDate: new Date().toDateString(),
       lastUpdated: null,
@@ -185,10 +187,27 @@ export const UserProvider = ({ children }) => {
       if (exists) {
         return prev;
       }
-      return {
+      
+      let newState = {
         ...prev,
         savedRecipes: [...prev.savedRecipes, recipe]
       };
+      
+      // If it's a custom recipe, also add it to customRecipes by mealType
+      if (recipe.isCustom) {
+        const mealType = recipe.mealType;
+        const existingCustom = prev.customRecipes[mealType] || [];
+        const customExists = existingCustom.some(r => r.name === recipe.name);
+        
+        if (!customExists) {
+          newState.customRecipes = {
+            ...prev.customRecipes,
+            [mealType]: [...existingCustom, recipe]
+          };
+        }
+      }
+      
+      return newState;
     });
   };
 
