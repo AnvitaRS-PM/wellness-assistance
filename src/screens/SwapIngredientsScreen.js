@@ -49,7 +49,18 @@ export default function SwapIngredientsScreen({ route, navigation }) {
         { name: 'white fish (cod)', calories: -20, protein: 0, fiber: 0, reason: 'Mild, flaky' },
         { name: 'squid', calories: -30, protein: +3, fiber: 0, reason: 'Tender, slightly sweet' },
       ],
-      'egg': [
+      'turkey': [
+        { name: 'chicken breast', calories: +10, protein: -2, fiber: 0, reason: 'Similar texture, slightly fattier' },
+        { name: 'lean ground beef', calories: +50, protein: +1, fiber: 0, reason: 'Richer flavor, more iron' },
+        { name: 'ground pork', calories: +60, protein: -1, fiber: 0, reason: 'Juicier, more flavor' },
+        { name: 'lentils', calories: -70, protein: -8, fiber: +8, reason: 'Plant-based, high fiber' },
+      ],
+      'meatball': [
+        { name: 'turkey meatballs', calories: -20, protein: +1, fiber: 0, reason: 'Leaner, similar taste' },
+        { name: 'chicken meatballs', calories: -10, protein: +2, fiber: 0, reason: 'Light, tender' },
+        { name: 'veggie meatballs', calories: -80, protein: -5, fiber: +6, reason: 'Plant-based, nutritious' },
+        { name: 'fish cakes', calories: -30, protein: +3, fiber: 0, reason: 'Seafood version, omega-3' },
+      ],
         { name: 'egg whites + 1 yolk', calories: -30, protein: +2, fiber: 0, reason: 'Less cholesterol, same protein' },
         { name: 'flax eggs', calories: -50, protein: -5, fiber: +3, reason: 'Vegan, omega-3' },
         { name: 'chia eggs', calories: -40, protein: -4, fiber: +4, reason: 'Vegan, high fiber' },
@@ -72,6 +83,13 @@ export default function SwapIngredientsScreen({ route, navigation }) {
         { name: 'buckwheat soba noodles', calories: -50, protein: +4, fiber: +3, reason: 'Nutty, higher protein' },
         { name: 'kelp noodles', calories: -150, protein: 0, fiber: +2, reason: 'Crunchy, low-calorie' },
         { name: 'rice noodles', calories: -30, protein: +1, fiber: +1, reason: 'Gluten-free, light' },
+        { name: 'chickpea noodles', calories: -40, protein: +6, fiber: +4, reason: 'High protein, hearty' },
+      ],
+      'zucchini': [
+        { name: 'buckwheat soba noodles', calories: +100, protein: +5, fiber: +3, reason: 'Traditional noodles, nutty' },
+        { name: 'shirataki noodles', calories: -30, protein: 0, fiber: +3, reason: 'Almost zero calories' },
+        { name: 'kelp noodles', calories: -120, protein: 0, fiber: +2, reason: 'Crunchy, sea flavor' },
+        { name: 'whole wheat pasta', calories: +120, protein: +7, fiber: +5, reason: 'Whole grain, filling' },
       ],
       'bread': [
         { name: 'whole grain sourdough', calories: +15, protein: +3, fiber: +5, reason: 'Fermented, easier digestion' },
@@ -305,7 +323,9 @@ export default function SwapIngredientsScreen({ route, navigation }) {
       prepTime: recipe.prepTime || '25 mins',
       ingredients: getFinalIngredients(),
       nutrients,
-      instructions: getUpdatedInstructions()
+      instructions: getUpdatedInstructions(),
+      isModified: true,
+      originalRecipeName: recipe.name // Track which recipe this replaces
     };
     saveRecipe(modifiedRecipe);
   };
@@ -414,6 +434,20 @@ export default function SwapIngredientsScreen({ route, navigation }) {
             <View key={idx} style={styles.nutrientRow}>
               <Text style={styles.nutrientLabel}>{n.name}:</Text>
               <Text style={styles.nutrientValue}>{n.value}</Text>
+            </View>
+          ))}
+        </View>
+
+        {/* Updated Instructions */}
+        <View style={styles.instructionsCard}>
+          <Text style={styles.sectionTitle}>📝 Updated Instructions</Text>
+          <Text style={styles.instructionsNote}>
+            Instructions updated with your selected ingredients
+          </Text>
+          {getUpdatedInstructions().map((instruction, index) => (
+            <View key={index} style={styles.instructionItem}>
+              <Text style={styles.instructionNumber}>{index + 1}.</Text>
+              <Text style={styles.instructionText}>{instruction}</Text>
             </View>
           ))}
         </View>
@@ -562,11 +596,42 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 20,
   },
+  instructionsCard: {
+    backgroundColor: '#F0FDF4',
+    borderRadius: 12,
+    padding: 18,
+    marginTop: 10,
+    marginBottom: 20,
+  },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#1E3A8A',
     marginBottom: 14,
+  },
+  instructionsNote: {
+    fontSize: 13,
+    color: '#166534',
+    fontStyle: 'italic',
+    marginBottom: 12,
+  },
+  instructionItem: {
+    flexDirection: 'row',
+    marginBottom: 12,
+    alignItems: 'flex-start',
+  },
+  instructionNumber: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#16A34A',
+    marginRight: 8,
+    minWidth: 24,
+  },
+  instructionText: {
+    fontSize: 15,
+    color: '#374151',
+    flex: 1,
+    lineHeight: 22,
   },
   calorieRow: {
     flexDirection: 'row',

@@ -200,27 +200,49 @@ export const UserProvider = ({ children }) => {
   // Helper function to save a recipe
   const saveRecipe = (recipe) => {
     setUserData(prev => {
-      const exists = prev.savedRecipes.some(r => r.name === recipe.name && r.mealType === recipe.mealType);
+      // If this is a modified recipe that replaces an original, remove the original first
+      let savedRecipes = prev.savedRecipes;
+      if (recipe.isModified && recipe.originalRecipeName) {
+        savedRecipes = savedRecipes.filter(r => 
+          !(r.name === recipe.originalRecipeName && r.mealType === recipe.mealType)
+        );
+      }
+      
+      // Check if this exact recipe already exists
+      const exists = savedRecipes.some(r => r.name === recipe.name && r.mealType === recipe.mealType);
       if (exists) {
-        return prev;
+        // Update existing recipe instead of adding duplicate
+        savedRecipes = savedRecipes.map(r => 
+          r.name === recipe.name && r.mealType === recipe.mealType ? recipe : r
+        );
+      } else {
+        // Add new recipe
+        savedRecipes = [...savedRecipes, recipe];
       }
       
       let newState = {
         ...prev,
-        savedRecipes: [...prev.savedRecipes, recipe],
+        savedRecipes,
         lastUpdated: new Date().toISOString()
       };
       
       // If it's a custom recipe, also add it to customRecipes by mealType
-      if (recipe.isCustom) {
+      if (recipe.isCustom || recipe.isModified) {
         const mealType = recipe.mealType;
         const existingCustom = prev.customRecipes[mealType] || [];
-        const customExists = existingCustom.some(r => r.name === recipe.name);
         
+        // Remove original if this replaces it
+        let filteredCustom = existingCustom;
+        if (recipe.isModified && recipe.originalRecipeName) {
+          filteredCustom = existingCustom.filter(r => r.name !== recipe.originalRecipeName);
+        }
+        
+        // Check if this recipe already exists in custom
+        const customExists = filteredCustom.some(r => r.name === recipe.name);
         if (!customExists) {
           newState.customRecipes = {
             ...prev.customRecipes,
-            [mealType]: [...existingCustom, recipe]
+            [mealType]: [...filteredCustom, recipe]
           };
         }
       }
