@@ -96,11 +96,11 @@ wellness-assistance/
 
 ### 01. Welcome Screen
 
-**Mockup Screen:**
-![Welcome Screen](./screenshots/01_welcome_screen.png)
-
 **App Screen:**
 ![Welcome Screen Demo](./demos/01_welcome_screen.gif)
+
+**Mockup Screen:**
+![Welcome Screen](./screenshots/01_welcome_screen.png)
 
 *Authentication options including Gmail, iPhone, Facebook, Email, and Guest mode*
 
@@ -108,11 +108,11 @@ wellness-assistance/
 
 ### 02. Personalization Screen
 
-**Mockup Screen:**
-![Personalization Screen](./screenshots/02_personalization_screen.png)
-
 **App Screen:**
 ![Personalization Screen Demo](./demos/02_personalization_screen.gif)
+
+**Mockup Screen:**
+![Personalization Screen](./screenshots/02_personalization_screen.png)
 
 *Enter your gender, weight, height, and goal timeline for personalized recommendations*
 
@@ -120,11 +120,11 @@ wellness-assistance/
 
 ### 03. Goals Screen
 
-**Mockup Screen:**
-![Goals Screen](./screenshots/03_goals_screen.png)
-
 **App Screen:**
 ![Goals Screen Demo](./demos/03_goals_screen.gif)
+
+**Mockup Screen:**
+![Goals Screen](./screenshots/03_goals_screen.png)
 
 *Select multiple wellness goals like weight loss, better skin, and more*
 
@@ -132,11 +132,11 @@ wellness-assistance/
 
 ### 04. Conditions & Preferences Screen
 
-**Mockup Screen:**
-![Conditions Screen](./screenshots/04_conditions_screen.png)
-
 **App Screen:**
 ![Conditions Screen Demo](./demos/04_conditions_screen.gif)
+
+**Mockup Screen:**
+![Conditions Screen](./screenshots/04_conditions_screen.png)
 
 *Define your health conditions, diet type, food preferences, and allergies*
 
@@ -144,11 +144,11 @@ wellness-assistance/
 
 ### 05. AI Recommendations Screen
 
-**Mockup Screen:**
-![Recommendations Screen](./screenshots/05_recommendations_screen.png)
-
 **App Screen:**
 ![Recommendations Screen Demo](./demos/05_diet_recommendation_screen.gif)
+
+**Mockup Screen:**
+![Recommendations Screen](./screenshots/05_recommendations_screen.png)
 
 *Get personalized diet plans powered by OpenAI based on your profile*
 
@@ -156,11 +156,11 @@ wellness-assistance/
 
 ### 06. Meal Planning Screen
 
-**Mockup Screen:**
-![Meal Planning Screen](./screenshots/06_meal_planning_screen.png)
-
 **App Screen:**
 ![Meal Planning Screen Demo](./demos/06_meal_planning_screen.gif)
+
+**Mockup Screen:**
+![Meal Planning Screen](./screenshots/06_meal_planning_screen.png)
 
 *Browse breakfast, lunch, dinner, and snack options tailored to your diet*
 
@@ -168,11 +168,11 @@ wellness-assistance/
 
 ### 07. Recipe & Nutrients Screen
 
-**Mockup Screen:**
-![Recipe & Nutrients Screen](./screenshots/07_recipe_nutrients_screen.png)
-
 **App Screen:**
 ![Recipe & Nutrients Screen Demo](./demos/07_recipe_nutrients_screen.gif)
+
+**Mockup Screen:**
+![Recipe & Nutrients Screen](./screenshots/07_recipe_nutrients_screen.png)
 
 *View detailed recipes with ingredients, instructions, and complete nutritional breakdown*
 
@@ -180,11 +180,11 @@ wellness-assistance/
 
 ### 08. Log Meal Confirmation
 
-**Mockup Screen:**
-![Log Meal Confirmation](./screenshots/08_log_meal_confirmation.png)
-
 **App Screen:**
 ![Log Meal Confirmation Demo](./demos/08_log_meal_confirmation_screen.gif)
+
+**Mockup Screen:**
+![Log Meal Confirmation](./screenshots/08_log_meal_confirmation.png)
 
 *Confirmation screen when successfully logging a meal to your daily intake*
 
@@ -192,11 +192,11 @@ wellness-assistance/
 
 ### 09. Saved Recipe Screen
 
-**Mockup Screen:**
-![Saved Recipe Screen](./screenshots/09_saved_recipe_screen.png)
-
 **App Screen:**
 ![Saved Recipe Screen Demo](./demos/09_saved_recipe_screen.gif)
+
+**Mockup Screen:**
+![Saved Recipe Screen](./screenshots/09_saved_recipe_screen.png)
 
 *Access all your saved recipes in one place for easy meal logging*
 
@@ -204,11 +204,11 @@ wellness-assistance/
 
 ### 10. Swap Ingredients Screen
 
-**Mockup Screen:**
-![Swap Ingredients Screen](./screenshots/10_swap_ingredients_screen.png)
-
 **App Screen:**
 ![Swap Ingredients Screen Demo](./demos/10_swap_ingredients_screen.gif)
+
+**Mockup Screen:**
+![Swap Ingredients Screen](./screenshots/10_swap_ingredients_screen.png)
 
 *Get AI-powered healthier ingredient alternatives with nutritional comparisons*
 
@@ -216,11 +216,11 @@ wellness-assistance/
 
 ### 11. Load Recipe Screen
 
-**Mockup Screen:**
-![Load Recipe Screen](./screenshots/11_load_recipe_screen.png)
-
 **App Screen:**
 ![Load Recipe Screen Demo](./demos/11_load_recipe_screen.gif)
+
+**Mockup Screen:**
+![Load Recipe Screen](./screenshots/11_load_recipe_screen.png)
 
 *Create and add your own custom recipes with ingredients, quantities, and instructions*
 
@@ -228,11 +228,11 @@ wellness-assistance/
 
 ### 12. Today's Metrics Screen
 
-**Mockup Screen:**
-![Today's Metrics Screen](./screenshots/12_todays_metrics_screen.png)
-
 **App Screen:**
 ![Today's Metrics Screen Demo](./demos/12_todays_metrics_screen.gif)
+
+**Mockup Screen:**
+![Today's Metrics Screen](./screenshots/12_todays_metrics_screen.png)
 
 *Track your daily calorie, protein, carb, fat, and fiber intake with visual progress*
 
@@ -240,11 +240,11 @@ wellness-assistance/
 
 ### 13. Groceries Screen
 
-**Mockup Screen:**
-![Groceries Screen](./screenshots/13_groceries_screen.png)
-
 **App Screen:**
 ![Groceries Screen Demo](./demos/13_groceries_screen.gif)
+
+**Mockup Screen:**
+![Groceries Screen](./screenshots/13_groceries_screen.png)
 
 *Smart shopping list auto-generated from saved recipes with manual item addition*
 
