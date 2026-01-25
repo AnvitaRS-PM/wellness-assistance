@@ -188,8 +188,13 @@ export const UserProvider = ({ children }) => {
     };
     setUserData(prev => ({
       ...prev,
-      loggedMeals: [...prev.loggedMeals, logEntry]
+      loggedMeals: [...prev.loggedMeals, logEntry],
+      lastUpdated: new Date().toISOString()
     }));
+    // Save after logging meal
+    setTimeout(() => {
+      saveUserData();
+    }, 500);
   };
 
   // Helper function to save a recipe
@@ -202,7 +207,8 @@ export const UserProvider = ({ children }) => {
       
       let newState = {
         ...prev,
-        savedRecipes: [...prev.savedRecipes, recipe]
+        savedRecipes: [...prev.savedRecipes, recipe],
+        lastUpdated: new Date().toISOString()
       };
       
       // If it's a custom recipe, also add it to customRecipes by mealType
@@ -221,14 +227,23 @@ export const UserProvider = ({ children }) => {
       
       return newState;
     });
+    // Save after adding recipe
+    setTimeout(() => {
+      saveUserData();
+    }, 500);
   };
 
   // Helper function to unsave a recipe
   const unsaveRecipe = (recipeName, mealType) => {
     setUserData(prev => ({
       ...prev,
-      savedRecipes: prev.savedRecipes.filter(r => !(r.name === recipeName && r.mealType === mealType))
+      savedRecipes: prev.savedRecipes.filter(r => !(r.name === recipeName && r.mealType === mealType)),
+      lastUpdated: new Date().toISOString()
     }));
+    // Save after removing recipe
+    setTimeout(() => {
+      saveUserData();
+    }, 500);
   };
 
   // Helper function to check if recipe is saved
