@@ -186,9 +186,6 @@ wellness-assistance/
 
 ![Saved Recipe Screen Demo](./demos/09_saved_recipe_screen.gif)
 
-**Mockup Screen:**
-![Saved Recipe Screen](./screenshots/09_saved_recipe_screen.png)
-
 *Access all your saved recipes in one place for easy meal logging*
 
 ---
@@ -198,7 +195,7 @@ wellness-assistance/
 ![Swap Ingredients Screen Demo](./demos/10_swap_ingredients_screen.gif)
 
 **Mockup Screen:**
-![Swap Ingredients Screen](./screenshots/10_swap_ingredients_screen.png)
+![Swap Ingredients Screen](./screenshots/09_swap_ingredients_screen.png)
 
 *Get AI-powered healthier ingredient alternatives with nutritional comparisons*
 
@@ -209,7 +206,7 @@ wellness-assistance/
 ![Load Recipe Screen Demo](./demos/11_load_recipe_screen.gif)
 
 **Mockup Screen:**
-![Load Recipe Screen](./screenshots/11_load_recipe_screen.png)
+![Load Recipe Screen](./screenshots/10_load_recipe_screen.png)
 
 *Create and add your own custom recipes with ingredients, quantities, and instructions*
 
@@ -220,7 +217,7 @@ wellness-assistance/
 ![Today's Metrics Screen Demo](./demos/12_todays_metrics_screen.gif)
 
 **Mockup Screen:**
-![Today's Metrics Screen](./screenshots/12_todays_metrics_screen.png)
+![Today's Metrics Screen](./screenshots/11_todays_metrics_screen.png)
 
 *Track your daily calorie, protein, carb, fat, and fiber intake with visual progress*
 
@@ -231,7 +228,7 @@ wellness-assistance/
 ![Groceries Screen Demo](./demos/13_groceries_screen.gif)
 
 **Mockup Screen:**
-![Groceries Screen](./screenshots/13_groceries_screen.png)
+![Groceries Screen](./screenshots/12_groceries_screen.png)
 
 *Smart shopping list auto-generated from saved recipes with manual item addition*
 
