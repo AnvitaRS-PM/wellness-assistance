@@ -61,6 +61,7 @@ export default function SwapIngredientsScreen({ route, navigation }) {
         { name: 'veggie meatballs', calories: -80, protein: -5, fiber: +6, reason: 'Plant-based, nutritious' },
         { name: 'fish cakes', calories: -30, protein: +3, fiber: 0, reason: 'Seafood version, omega-3' },
       ],
+      'egg': [
         { name: 'egg whites + 1 yolk', calories: -30, protein: +2, fiber: 0, reason: 'Less cholesterol, same protein' },
         { name: 'flax eggs', calories: -50, protein: -5, fiber: +3, reason: 'Vegan, omega-3' },
         { name: 'chia eggs', calories: -40, protein: -4, fiber: +4, reason: 'Vegan, high fiber' },
