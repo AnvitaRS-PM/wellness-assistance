@@ -96,7 +96,6 @@ wellness-assistance/
 
 ### 01. Welcome Screen
 
-**App Screen:**
 ![Welcome Screen Demo](./demos/01_welcome_screen.gif)
 
 **Mockup Screen:**
@@ -108,7 +107,6 @@ wellness-assistance/
 
 ### 02. Personalization Screen
 
-**App Screen:**
 ![Personalization Screen Demo](./demos/02_personalization_screen.gif)
 
 **Mockup Screen:**
@@ -120,7 +118,6 @@ wellness-assistance/
 
 ### 03. Goals Screen
 
-**App Screen:**
 ![Goals Screen Demo](./demos/03_goals_screen.gif)
 
 **Mockup Screen:**
@@ -132,7 +129,6 @@ wellness-assistance/
 
 ### 04. Conditions & Preferences Screen
 
-**App Screen:**
 ![Conditions Screen Demo](./demos/04_conditions_screen.gif)
 
 **Mockup Screen:**
@@ -144,7 +140,6 @@ wellness-assistance/
 
 ### 05. AI Recommendations Screen
 
-**App Screen:**
 ![Recommendations Screen Demo](./demos/05_diet_recommendation_screen.gif)
 
 **Mockup Screen:**
@@ -156,7 +151,6 @@ wellness-assistance/
 
 ### 06. Meal Planning Screen
 
-**App Screen:**
 ![Meal Planning Screen Demo](./demos/06_meal_planning_screen.gif)
 
 **Mockup Screen:**
@@ -168,7 +162,6 @@ wellness-assistance/
 
 ### 07. Recipe & Nutrients Screen
 
-**App Screen:**
 ![Recipe & Nutrients Screen Demo](./demos/07_recipe_nutrients_screen.gif)
 
 **Mockup Screen:**
@@ -180,7 +173,6 @@ wellness-assistance/
 
 ### 08. Log Meal Confirmation
 
-**App Screen:**
 ![Log Meal Confirmation Demo](./demos/08_log_meal_confirmation_screen.gif)
 
 **Mockup Screen:**
@@ -192,7 +184,6 @@ wellness-assistance/
 
 ### 09. Saved Recipe Screen
 
-**App Screen:**
 ![Saved Recipe Screen Demo](./demos/09_saved_recipe_screen.gif)
 
 **Mockup Screen:**
@@ -204,7 +195,6 @@ wellness-assistance/
 
 ### 10. Swap Ingredients Screen
 
-**App Screen:**
 ![Swap Ingredients Screen Demo](./demos/10_swap_ingredients_screen.gif)
 
 **Mockup Screen:**
@@ -216,7 +206,6 @@ wellness-assistance/
 
 ### 11. Load Recipe Screen
 
-**App Screen:**
 ![Load Recipe Screen Demo](./demos/11_load_recipe_screen.gif)
 
 **Mockup Screen:**
@@ -228,7 +217,6 @@ wellness-assistance/
 
 ### 12. Today's Metrics Screen
 
-**App Screen:**
 ![Today's Metrics Screen Demo](./demos/12_todays_metrics_screen.gif)
 
 **Mockup Screen:**
@@ -240,7 +228,6 @@ wellness-assistance/
 
 ### 13. Groceries Screen
 
-**App Screen:**
 ![Groceries Screen Demo](./demos/13_groceries_screen.gif)
 
 **Mockup Screen:**
