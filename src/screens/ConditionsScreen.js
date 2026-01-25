@@ -250,10 +250,10 @@ const styles = StyleSheet.create({
     borderColor: '#4A90E2',
   },
   checkboxInner: {
-    width: 10,
-    height: 10,
-    backgroundColor: '#fff',
-    borderRadius: 2,
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#A8D5BA',
+    borderRadius: 3,
   },
   checkboxLabel: {
     fontSize: 16,

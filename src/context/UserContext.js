@@ -130,8 +130,10 @@ export const UserProvider = ({ children }) => {
       ...newData,
       lastUpdated: new Date().toISOString()
     }));
-    // DISABLED SAVE - No AsyncStorage operations
-    // Save only happens manually
+    // Save after updating - with small delay to batch multiple updates
+    setTimeout(() => {
+      saveUserData();
+    }, 500);
   };
 
   const loadExistingUser = async (name, dob) => {
