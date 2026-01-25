@@ -22,19 +22,25 @@ export default function SwapIngredientsScreen({ route, navigation }) {
         // Grains & Carbs
         { keywords: ['white bread', 'bread', 'toast'], replacement: 'whole grain sourdough bread', calories: +15, fiber: +5, protein: +3, reason: 'Better digestion, more nutrients' },
         { keywords: ['white rice', 'rice'], replacement: 'cauliflower rice', calories: -120, fiber: +3, protein: +1, reason: 'Lower carbs, more vegetables' },
-        { keywords: ['pasta', 'spaghetti', 'noodles'], replacement: 'zucchini noodles (zoodles)', calories: -150, fiber: +2, protein: +1, reason: 'Veggie-based, lower calories' },
+        { keywords: ['pasta', 'spaghetti'], replacement: 'zucchini noodles (zoodles)', calories: -150, fiber: +2, protein: +1, reason: 'Veggie-based, lower calories' },
+        { keywords: ['noodles', 'zucchini noodles'], replacement: 'buckwheat noodles (soba)', calories: -50, fiber: +3, protein: +4, reason: 'Higher protein, nutty flavor' },
         { keywords: ['flour', 'all-purpose'], replacement: 'almond flour', calories: +50, fiber: +4, protein: +6, reason: 'Gluten-free, higher protein' },
         { keywords: ['quinoa'], replacement: 'farro', calories: +20, fiber: +2, protein: +2, reason: 'Nuttier flavor, chewy texture' },
         { keywords: ['oats', 'oatmeal'], replacement: 'steel-cut oats', calories: +10, fiber: +2, protein: +1, reason: 'Less processed, better texture' },
+        { keywords: ['couscous'], replacement: 'bulgur wheat', calories: -20, fiber: +3, protein: +2, reason: 'More fiber, nutty taste' },
+        { keywords: ['tortilla', 'wrap'], replacement: 'collard green wraps', calories: -120, fiber: +2, protein: +1, reason: 'Low-carb, veggie-based' },
         
         // Proteins
         { keywords: ['chicken breast'], replacement: 'turkey breast', calories: -10, fiber: 0, protein: +2, reason: 'Leaner, similar taste' },
         { keywords: ['ground beef', 'beef'], replacement: 'ground turkey', calories: -50, fiber: 0, protein: +1, reason: 'Leaner, less saturated fat' },
+        { keywords: ['steak', 'sirloin'], replacement: 'bison steak', calories: -30, fiber: 0, protein: +3, reason: 'Leaner, gamey flavor' },
+        { keywords: ['pork'], replacement: 'chicken thighs', calories: -40, fiber: 0, protein: +2, reason: 'Less fat, still juicy' },
         { keywords: ['bacon'], replacement: 'turkey bacon', calories: -50, fiber: 0, protein: -2, reason: 'Lower fat, similar smoky flavor' },
         { keywords: ['salmon'], replacement: 'mackerel', calories: +30, fiber: 0, protein: +3, reason: 'More omega-3s, richer flavor' },
         { keywords: ['tuna'], replacement: 'sardines', calories: +40, fiber: 0, protein: +5, reason: 'Higher omega-3, more calcium' },
         { keywords: ['egg', 'eggs'], replacement: 'egg whites + 1 whole egg', calories: -30, fiber: 0, protein: +2, reason: 'Less cholesterol, same protein' },
         { keywords: ['tofu'], replacement: 'tempeh', calories: +30, fiber: +3, protein: +5, reason: 'Fermented, nuttier taste' },
+        { keywords: ['shrimp'], replacement: 'scallops', calories: +10, fiber: 0, protein: +2, reason: 'Sweet flavor, meaty texture' },
         
         // Dairy
         { keywords: ['whole milk', 'milk'], replacement: 'unsweetened almond milk', calories: -110, fiber: +1, protein: -7, reason: 'Lower calories, dairy-free' },
@@ -43,29 +49,35 @@ export default function SwapIngredientsScreen({ route, navigation }) {
         { keywords: ['cheese', 'cheddar'], replacement: 'nutritional yeast', calories: -80, fiber: +2, protein: +5, reason: 'Cheesy flavor, B-vitamins' },
         { keywords: ['yogurt', 'greek yogurt'], replacement: 'Icelandic skyr', calories: -20, fiber: 0, protein: +5, reason: 'Thicker, more protein' },
         { keywords: ['sour cream'], replacement: 'Greek yogurt', calories: -40, fiber: 0, protein: +8, reason: 'Higher protein, probiotic' },
+        { keywords: ['parmesan'], replacement: 'pecorino romano', calories: +10, fiber: 0, protein: +2, reason: 'Sharper flavor, aged' },
         
         // Sweeteners
         { keywords: ['sugar', 'white sugar'], replacement: 'coconut sugar', calories: +5, fiber: +1, protein: 0, reason: 'Lower glycemic index' },
         { keywords: ['honey'], replacement: 'maple syrup', calories: +10, fiber: 0, protein: 0, reason: 'More antioxidants, unique flavor' },
         { keywords: ['syrup'], replacement: 'date syrup', calories: +15, fiber: +2, protein: +1, reason: 'Whole fruit sweetener, minerals' },
+        { keywords: ['agave'], replacement: 'monk fruit sweetener', calories: -60, fiber: 0, protein: 0, reason: 'Zero calories, no sugar spike' },
         
         // Fats & Oils
         { keywords: ['vegetable oil', 'canola oil'], replacement: 'avocado oil', calories: +5, fiber: 0, protein: 0, reason: 'Higher smoke point, healthier fats' },
         { keywords: ['olive oil'], replacement: 'extra virgin olive oil', calories: 0, fiber: 0, protein: 0, reason: 'More antioxidants, better quality' },
         { keywords: ['mayonnaise', 'mayo'], replacement: 'mashed avocado', calories: -40, fiber: +4, protein: +1, reason: 'Natural fats, more nutrients' },
+        { keywords: ['shortening'], replacement: 'coconut oil', calories: +10, fiber: 0, protein: 0, reason: 'Natural fat, better for baking' },
         
         // Vegetables (enhance, don't just swap)
         { keywords: ['spinach'], replacement: 'kale', calories: +5, fiber: +2, protein: +1, reason: 'More vitamin K, heartier' },
-        { keywords: ['lettuce'], replacement: 'arugula', calories: +5, fiber: +1, protein: +1, reason: 'Peppery flavor, more nutrients' },
+        { keywords: ['lettuce', 'iceberg'], replacement: 'arugula', calories: +5, fiber: +1, protein: +1, reason: 'Peppery flavor, more nutrients' },
         { keywords: ['potato', 'potatoes'], replacement: 'sweet potato', calories: +20, fiber: +2, protein: +1, reason: 'More vitamin A, lower GI' },
         { keywords: ['onion', 'onions'], replacement: 'shallots', calories: +5, fiber: +1, protein: 0, reason: 'Milder, sweeter flavor' },
         { keywords: ['bell pepper'], replacement: 'poblano pepper', calories: +5, fiber: +1, protein: 0, reason: 'Slightly spicy, richer flavor' },
+        { keywords: ['cucumber'], replacement: 'zucchini', calories: +5, fiber: +1, protein: +1, reason: 'More versatile, can be cooked' },
+        { keywords: ['corn'], replacement: 'edamame', calories: -20, fiber: +2, protein: +8, reason: 'Higher protein, lower carbs' },
         
         // Condiments & Seasonings
         { keywords: ['salt', 'table salt'], replacement: 'pink Himalayan salt', calories: 0, fiber: 0, protein: 0, reason: 'Trace minerals, less processed' },
         { keywords: ['soy sauce'], replacement: 'coconut aminos', calories: -5, fiber: 0, protein: -1, reason: 'Soy-free, lower sodium' },
         { keywords: ['ketchup'], replacement: 'sugar-free tomato paste', calories: -30, fiber: +1, protein: +1, reason: 'No added sugar, more concentrated' },
         { keywords: ['bbq sauce'], replacement: 'chipotle in adobo', calories: -20, fiber: +1, protein: 0, reason: 'Smoky flavor, less sugar' },
+        { keywords: ['ranch'], replacement: 'tahini sauce', calories: -30, fiber: +2, protein: +3, reason: 'Sesame-based, Mediterranean flair' },
       ];
 
       // Find matching swap rule
@@ -77,30 +89,9 @@ export default function SwapIngredientsScreen({ route, navigation }) {
         }
       }
 
-      // If no specific match found, provide a generic healthy upgrade
+      // If no specific match found, return null (no swap available)
       if (!swapData) {
-        // Try to make an intelligent generic swap
-        if (lowerIng.includes('cup') || lowerIng.includes('tbsp') || lowerIng.includes('tsp')) {
-          // It's a measured ingredient, suggest organic version
-          return {
-            original: ingredient,
-            replacement: `organic ${ingredient}`,
-            calories: +5,
-            fiber: +1,
-            protein: 0,
-            reason: 'Pesticide-free, cleaner option'
-          };
-        } else {
-          // For other ingredients, suggest fresh/whole version
-          return {
-            original: ingredient,
-            replacement: `fresh ${ingredient}`,
-            calories: 0,
-            fiber: +1,
-            protein: 0,
-            reason: 'Fresher, less processed'
-          };
-        }
+        return null;
       }
 
       return {
@@ -113,10 +104,46 @@ export default function SwapIngredientsScreen({ route, navigation }) {
       };
     });
 
-    return swapSuggestions;
+    return swapSuggestions.filter(swap => swap !== null); // Filter out ingredients without swaps
   };
 
   const swaps = generateSwaps();
+
+  // Generate dynamic recipe name based on key ingredient swaps
+  const getUpdatedRecipeName = () => {
+    let newName = recipe.name;
+    
+    // Key ingredient mappings that should change the recipe name
+    const nameChanges = [
+      { keywords: ['beef'], swap: 'turkey', newIngredient: 'Turkey' },
+      { keywords: ['chicken'], swap: 'turkey', newIngredient: 'Turkey' },
+      { keywords: ['salmon'], swap: 'mackerel', newIngredient: 'Mackerel' },
+      { keywords: ['tuna'], swap: 'sardines', newIngredient: 'Sardine' },
+      { keywords: ['rice'], swap: 'cauliflower', newIngredient: 'Cauliflower' },
+      { keywords: ['pasta', 'spaghetti', 'noodles'], swap: 'zucchini', newIngredient: 'Zucchini' },
+      { keywords: ['pork'], swap: 'turkey', newIngredient: 'Turkey' },
+    ];
+
+    // Check each swap to see if it affects the recipe name
+    swaps.forEach((swap, idx) => {
+      if (ingredientChoices[idx]) {
+        nameChanges.forEach(change => {
+          const originalLower = swap.original.toLowerCase();
+          const replacementLower = swap.replacement.toLowerCase();
+          
+          // Check if this swap involves a key ingredient
+          if (change.keywords.some(keyword => originalLower.includes(keyword)) &&
+              replacementLower.includes(change.swap.toLowerCase())) {
+            // Replace the ingredient name in the recipe title
+            const regex = new RegExp(change.keywords.join('|'), 'gi');
+            newName = newName.replace(regex, change.newIngredient);
+          }
+        });
+      }
+    });
+
+    return newName;
+  };
 
   // Initialize all choices to 'swap' by default
   useEffect(() => {
@@ -225,10 +252,11 @@ export default function SwapIngredientsScreen({ route, navigation }) {
   };
 
   const updatedInstructions = getUpdatedInstructions();
+  const updatedRecipeName = getUpdatedRecipeName();
 
   const handleSaveRecipe = () => {
     const modifiedRecipe = {
-      name: `${recipe.name} (Modified)`,
+      name: updatedRecipeName,
       mealType,
       calories: calculatedCalories,
       prepTime: calculatedPrepTime,
@@ -242,24 +270,27 @@ export default function SwapIngredientsScreen({ route, navigation }) {
   const handleLogMeal = () => {
     // Log the meal with updated nutrition
     logMeal({
-      recipeName: `${recipe.name} (Modified)`,
+      recipeName: updatedRecipeName,
       mealType: mealType,
       calories: calculatedCalories,
       nutrients: calculatedNutrients,
       prepTime: calculatedPrepTime
     });
     navigation.navigate('LogMealConfirmation', { 
-      recipeName: `${recipe.name} (Modified)`, 
+      recipeName: updatedRecipeName, 
       mealType: mealType 
     });
   };
 
-  const isSaved = isRecipeSaved(`${recipe.name} (Modified)`, mealType);
+  const isSaved = isRecipeSaved(updatedRecipeName, mealType);
 
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.title}>{recipe.name}</Text>
+        <Text style={styles.title}>{updatedRecipeName}</Text>
+        {updatedRecipeName !== recipe.name && (
+          <Text style={styles.originalName}>Original: {recipe.name}</Text>
+        )}
         <Text style={styles.subtitle}>Choose original or healthier alternatives</Text>
         {recipe.prepTime && (
           <Text style={styles.originalPrepTime}>Original Prep: {recipe.prepTime}</Text>
@@ -328,17 +359,54 @@ export default function SwapIngredientsScreen({ route, navigation }) {
 
         {/* Updated Nutrients */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📊 Recalculated Nutrients</Text>
+          <Text style={styles.sectionTitle}>📊 Nutritional Comparison</Text>
           <View style={styles.updatedNutrientsCard}>
-            {calculatedNutrients.map((nutrient, idx) => (
-              <View key={idx} style={styles.nutrientRow}>
-                <Text style={styles.nutrientName}>{nutrient.name}</Text>
-                <Text style={styles.nutrientValue}>{nutrient.value}</Text>
-              </View>
-            ))}
+            <View style={styles.comparisonHeader}>
+              <Text style={styles.comparisonLabel}>Nutrient</Text>
+              <Text style={styles.comparisonLabel}>Original</Text>
+              <Text style={styles.comparisonLabel}>Updated</Text>
+            </View>
+            {calculatedNutrients.map((nutrient, idx) => {
+              const originalValue = parseInt((recipe.nutrients && recipe.nutrients[idx]?.value) || nutrient.value);
+              const newValue = parseInt(nutrient.value);
+              const difference = newValue - originalValue;
+              const showDiff = difference !== 0;
+              
+              return (
+                <View key={idx} style={styles.nutrientRow}>
+                  <Text style={styles.nutrientName}>{nutrient.name}</Text>
+                  <Text style={styles.originalValue}>{originalValue}g</Text>
+                  <View style={styles.updatedValueContainer}>
+                    <Text style={[
+                      styles.nutrientValue,
+                      difference > 0 ? styles.increaseValue : difference < 0 ? styles.decreaseValue : {}
+                    ]}>{nutrient.value}</Text>
+                    {showDiff && (
+                      <Text style={[
+                        styles.differenceText,
+                        difference > 0 ? styles.increaseText : styles.decreaseText
+                      ]}>
+                        {difference > 0 ? `+${difference}g` : `${difference}g`}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+              );
+            })}
             <View style={styles.totalCalories}>
               <Text style={styles.caloriesLabel}>Total Calories</Text>
-              <Text style={styles.caloriesValue}>{calculatedCalories} Kcal</Text>
+              <Text style={styles.originalCalories}>{recipe.calories} cal</Text>
+              <View style={styles.updatedCaloriesContainer}>
+                <Text style={styles.caloriesValue}>{calculatedCalories} cal</Text>
+                {calculatedCalories !== recipe.calories && (
+                  <Text style={[
+                    styles.caloriesDiff,
+                    calculatedCalories < recipe.calories ? styles.decreaseText : styles.increaseText
+                  ]}>
+                    {calculatedCalories - recipe.calories > 0 ? '+' : ''}{calculatedCalories - recipe.calories}
+                  </Text>
+                )}
+              </View>
             </View>
           </View>
         </View>
@@ -409,6 +477,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 8,
     color: '#333',
+  },
+  originalName: {
+    fontSize: 13,
+    color: '#999',
+    fontStyle: 'italic',
+    marginBottom: 8,
   },
   subtitle: {
     fontSize: 14,
@@ -531,6 +605,21 @@ const styles = StyleSheet.create({
     borderLeftWidth: 4,
     borderLeftColor: '#27AE60',
   },
+  comparisonHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingBottom: 12,
+    borderBottomWidth: 2,
+    borderBottomColor: '#333',
+    marginBottom: 8,
+  },
+  comparisonLabel: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: '#333',
+    flex: 1,
+    textAlign: 'center',
+  },
   nutrientRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -543,11 +632,40 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     color: '#333',
+    flex: 1,
+  },
+  originalValue: {
+    fontSize: 14,
+    color: '#999',
+    flex: 1,
+    textAlign: 'center',
+    textDecorationLine: 'line-through',
+  },
+  updatedValueContainer: {
+    flex: 1,
+    alignItems: 'center',
   },
   nutrientValue: {
     fontSize: 15,
     color: '#27AE60',
     fontWeight: '600',
+  },
+  increaseValue: {
+    color: '#E67E22',
+  },
+  decreaseValue: {
+    color: '#27AE60',
+  },
+  differenceText: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    marginTop: 2,
+  },
+  increaseText: {
+    color: '#E67E22',
+  },
+  decreaseText: {
+    color: '#27AE60',
   },
   totalCalories: {
     backgroundColor: '#E8F4FD',
@@ -562,11 +680,28 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: '#2C5F8D',
+    flex: 1,
+  },
+  originalCalories: {
+    fontSize: 14,
+    color: '#999',
+    flex: 1,
+    textAlign: 'center',
+    textDecorationLine: 'line-through',
+  },
+  updatedCaloriesContainer: {
+    flex: 1,
+    alignItems: 'center',
   },
   caloriesValue: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#4A90E2',
+  },
+  caloriesDiff: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginTop: 2,
   },
   card: {
     backgroundColor: '#F8F9FA',
