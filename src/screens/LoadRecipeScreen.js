@@ -7,7 +7,7 @@ import MealTypePicker from '../components/MealTypePicker';
 export default function LoadRecipeScreen({ navigation }) {
   const { userData, saveRecipe } = useUser();
   const [recipeName, setRecipeName] = useState('');
-  const [ingredients, setIngredients] = useState([]);
+  const [ingredients, setIngredients] = useState([]); // Now stores {name, quantity}
   const [instructions, setInstructions] = useState([]);
   const [recipeImage, setRecipeImage] = useState(null);
   const [currentIngredient, setCurrentIngredient] = useState('');
@@ -64,13 +64,14 @@ export default function LoadRecipeScreen({ navigation }) {
   // Recalculate nutrition when ingredients change
   useEffect(() => {
     const totals = ingredients.reduce((acc, ing) => {
-      const nutrients = estimateIngredientNutrients(ing);
+      const nutrients = estimateIngredientNutrients(ing.name);
+      const quantity = ing.quantity || 1;
       return {
-        calories: acc.calories + nutrients.calories,
-        protein: acc.protein + nutrients.protein,
-        carbs: acc.carbs + nutrients.carbs,
-        fat: acc.fat + nutrients.fat,
-        fiber: acc.fiber + nutrients.fiber
+        calories: acc.calories + (nutrients.calories * quantity),
+        protein: acc.protein + (nutrients.protein * quantity),
+        carbs: acc.carbs + (nutrients.carbs * quantity),
+        fat: acc.fat + (nutrients.fat * quantity),
+        fiber: acc.fiber + (nutrients.fiber * quantity)
       };
     }, { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 });
 
@@ -93,12 +94,19 @@ export default function LoadRecipeScreen({ navigation }) {
       Alert.alert('Error', 'Please enter an ingredient');
       return;
     }
-    setIngredients([...ingredients, currentIngredient.trim()]);
+    setIngredients([...ingredients, { name: currentIngredient.trim(), quantity: 1 }]);
     setCurrentIngredient('');
   };
 
   const handleRemoveIngredient = (index) => {
     const newIngredients = ingredients.filter((_, i) => i !== index);
+    setIngredients(newIngredients);
+  };
+
+  const handleUpdateQuantity = (index, change) => {
+    const newIngredients = [...ingredients];
+    const newQuantity = Math.max(1, (newIngredients[index].quantity || 1) + change);
+    newIngredients[index] = { ...newIngredients[index], quantity: newQuantity };
     setIngredients(newIngredients);
   };
 
@@ -142,18 +150,19 @@ export default function LoadRecipeScreen({ navigation }) {
     }
 
     const totals = ingredients.reduce((acc, ing) => {
-      const nutrients = estimateIngredientNutrients(ing);
+      const nutrients = estimateIngredientNutrients(ing.name);
+      const quantity = ing.quantity || 1;
       return {
-        protein: acc.protein + nutrients.protein,
-        carbs: acc.carbs + nutrients.carbs,
-        fat: acc.fat + nutrients.fat,
-        fiber: acc.fiber + nutrients.fiber
+        protein: acc.protein + (nutrients.protein * quantity),
+        carbs: acc.carbs + (nutrients.carbs * quantity),
+        fat: acc.fat + (nutrients.fat * quantity),
+        fiber: acc.fiber + (nutrients.fiber * quantity)
       };
     }, { protein: 0, carbs: 0, fat: 0, fiber: 0 });
 
     const recipe = {
       name: recipeName || 'Custom Recipe',
-      ingredients: ingredients,
+      ingredients: ingredients.map(ing => `${ing.quantity}x ${ing.name}`),
       instructions: instructions,
       prepTime: calculatedPrepTime,
       isCustom: true,
@@ -184,19 +193,20 @@ export default function LoadRecipeScreen({ navigation }) {
     }
 
     const totals = ingredients.reduce((acc, ing) => {
-      const nutrients = estimateIngredientNutrients(ing);
+      const nutrients = estimateIngredientNutrients(ing.name);
+      const quantity = ing.quantity || 1;
       return {
-        protein: acc.protein + nutrients.protein,
-        carbs: acc.carbs + nutrients.carbs,
-        fat: acc.fat + nutrients.fat,
-        fiber: acc.fiber + nutrients.fiber
+        protein: acc.protein + (nutrients.protein * quantity),
+        carbs: acc.carbs + (nutrients.carbs * quantity),
+        fat: acc.fat + (nutrients.fat * quantity),
+        fiber: acc.fiber + (nutrients.fiber * quantity)
       };
     }, { protein: 0, carbs: 0, fat: 0, fiber: 0 });
 
     const newRecipe = {
       name: recipeName,
       mealType: selectedMealType,
-      ingredients: ingredients,
+      ingredients: ingredients.map(ing => `${ing.quantity}x ${ing.name}`),
       instructions: instructions,
       prepTime: calculatedPrepTime,
       calories: calculatedCalories,
@@ -224,12 +234,37 @@ export default function LoadRecipeScreen({ navigation }) {
   };
 
   const renderIngredientWithNutrients = (ingredient, index) => {
-    const nutrients = estimateIngredientNutrients(ingredient);
+    const nutrients = estimateIngredientNutrients(ingredient.name);
+    const quantity = ingredient.quantity || 1;
+    const totalNutrients = {
+      calories: nutrients.calories * quantity,
+      protein: nutrients.protein * quantity,
+      carbs: nutrients.carbs * quantity,
+      fat: nutrients.fat * quantity
+    };
+
     return (
       <View key={index} style={styles.listItem}>
         <View style={styles.ingredientHeader}>
           <Text style={styles.itemNumber}>{index + 1}.</Text>
-          <Text style={styles.itemText}>{ingredient}</Text>
+          <View style={styles.ingredientNameContainer}>
+            <Text style={styles.itemText}>{ingredient.name}</Text>
+            <View style={styles.quantityCounter}>
+              <TouchableOpacity 
+                style={styles.counterButton}
+                onPress={() => handleUpdateQuantity(index, -1)}
+              >
+                <Text style={styles.counterButtonText}>−</Text>
+              </TouchableOpacity>
+              <Text style={styles.quantityText}>{quantity}x</Text>
+              <TouchableOpacity 
+                style={styles.counterButton}
+                onPress={() => handleUpdateQuantity(index, 1)}
+              >
+                <Text style={styles.counterButtonText}>+</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
           <TouchableOpacity 
             style={styles.removeButton}
             onPress={() => handleRemoveIngredient(index)}
@@ -238,10 +273,10 @@ export default function LoadRecipeScreen({ navigation }) {
           </TouchableOpacity>
         </View>
         <View style={styles.nutrientSummary}>
-          <Text style={styles.nutrientSmall}>~{nutrients.calories} cal</Text>
-          <Text style={styles.nutrientSmall}>P: {nutrients.protein}g</Text>
-          <Text style={styles.nutrientSmall}>C: {nutrients.carbs}g</Text>
-          <Text style={styles.nutrientSmall}>F: {nutrients.fat}g</Text>
+          <Text style={styles.nutrientSmall}>~{Math.round(totalNutrients.calories)} cal</Text>
+          <Text style={styles.nutrientSmall}>P: {Math.round(totalNutrients.protein)}g</Text>
+          <Text style={styles.nutrientSmall}>C: {Math.round(totalNutrients.carbs)}g</Text>
+          <Text style={styles.nutrientSmall}>F: {Math.round(totalNutrients.fat)}g</Text>
         </View>
       </View>
     );
@@ -480,7 +515,37 @@ const styles = StyleSheet.create({
   ingredientHeader: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 4,
+    marginBottom: 8,
+  },
+  ingredientNameContainer: {
+    flex: 1,
+  },
+  quantityCounter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 6,
+    gap: 8,
+  },
+  counterButton: {
+    backgroundColor: '#4A90E2',
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  counterButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+    lineHeight: 20,
+  },
+  quantityText: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#4A90E2',
+    minWidth: 35,
+    textAlign: 'center',
   },
   itemNumber: {
     fontSize: 15,
