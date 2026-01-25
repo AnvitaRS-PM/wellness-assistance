@@ -9,6 +9,36 @@ export default function RecommendationsScreen({ navigation }) {
   const [error, setError] = useState(null);
   const [recommendations, setRecommendations] = useState(null);
 
+  // Helper function to filter out allergies from recommended foods
+  const filterAllergens = (foods, allergies, customAllergies) => {
+    if (!foods || foods.length === 0) return foods;
+    
+    // Parse custom allergies (comma-separated)
+    const customAllergyList = customAllergies 
+      ? customAllergies.split(',').map(a => a.trim().toLowerCase()).filter(a => a.length > 0)
+      : [];
+    
+    // Combine all allergies/dislikes
+    const allAllergies = [
+      ...(allergies || []).map(a => a.toLowerCase()),
+      ...customAllergyList
+    ];
+    
+    if (allAllergies.length === 0) return foods;
+    
+    // Filter out foods that contain any allergen
+    return foods.filter(food => {
+      const foodLower = (food || '').toLowerCase();
+      for (const allergen of allAllergies) {
+        if (foodLower.includes(allergen)) {
+          console.log(`🚫 Filtering out "${food}" from recommended foods - contains allergen: "${allergen}"`);
+          return false;
+        }
+      }
+      return true;
+    });
+  };
+
   useEffect(() => {
     generateRecommendations();
   }, []);
@@ -87,12 +117,23 @@ export default function RecommendationsScreen({ navigation }) {
           <Text style={styles.sectionTitle}>Recommended Food Items (For Healing & Health)</Text>
           <Text style={styles.sectionSubtitle}>These foods are specifically chosen to help manage your health conditions and achieve your wellness goals.</Text>
           {recommendations?.recommendedFoods && recommendations.recommendedFoods.length > 0 ? (
-            recommendations.recommendedFoods.map((food, index) => (
-              <View key={index} style={styles.listItem}>
-                <Text style={styles.bullet}>•</Text>
-                <Text style={styles.listItemText}>{food}</Text>
-              </View>
-            ))
+            (() => {
+              const filteredFoods = filterAllergens(
+                recommendations.recommendedFoods, 
+                userData.allergies, 
+                userData.customAllergies
+              );
+              return filteredFoods.length > 0 ? (
+                filteredFoods.map((food, index) => (
+                  <View key={index} style={styles.listItem}>
+                    <Text style={styles.bullet}>•</Text>
+                    <Text style={styles.listItemText}>{food}</Text>
+                  </View>
+                ))
+              ) : (
+                <Text style={styles.placeholderText}>No specific recommendations (all foods filtered due to allergies/dislikes)</Text>
+              );
+            })()
           ) : (
             <Text style={styles.placeholderText}>No specific recommendations</Text>
           )}

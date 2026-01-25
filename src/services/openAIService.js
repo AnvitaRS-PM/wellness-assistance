@@ -117,11 +117,12 @@ IMPORTANT INSTRUCTIONS:
 3. RECOMMENDED FOODS: Focus on HEALING and THERAPEUTIC foods based on their health conditions.
    - Prioritize foods that help manage/improve their specific conditions (PCOS, diabetes, thyroid, etc.)
    - These should be foods medically beneficial for their conditions
-   - CRITICAL: Do NOT recommend ANY items listed in their Allergies/Dislikes section
+   - CRITICAL: Do NOT recommend ANY items listed in their Allergies/Dislikes section: ${allAllergies || 'None'}
    - Exclude ALL foods from their Allergies/Dislikes list completely
    - Consider their age and gender for age-appropriate nutritional needs
    - Do NOT just recommend foods they prefer - recommend what's BEST for their health
    - Include at least 8-10 specific food items
+   - IMPORTANT: Carefully check each recommended food against the Allergies/Dislikes list before including it
 
 4. FOODS TO AVOID: List foods that are HARMFUL or COUNTERPRODUCTIVE for their health conditions and goals.
    - Base this on their medical conditions and health goals
@@ -461,6 +462,40 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
     }
   },
 
+  // Helper function to check if recipe contains allergies/dislikes
+  containsAllergens(recipe, allergies, customAllergies) {
+    if (!recipe) return false;
+    
+    // Parse custom allergies (comma-separated)
+    const customAllergyList = customAllergies 
+      ? customAllergies.split(',').map(a => a.trim().toLowerCase()).filter(a => a.length > 0)
+      : [];
+    
+    // Combine all allergies/dislikes
+    const allAllergies = [
+      ...(allergies || []).map(a => a.toLowerCase()),
+      ...customAllergyList
+    ];
+    
+    if (allAllergies.length === 0) return false;
+    
+    // Check recipe name
+    const recipeName = (recipe.name || '').toLowerCase();
+    
+    // Check ingredients
+    const ingredients = (recipe.ingredients || []).join(' ').toLowerCase();
+    
+    // Check if any allergen appears in recipe name or ingredients
+    for (const allergen of allAllergies) {
+      if (recipeName.includes(allergen) || ingredients.includes(allergen)) {
+        console.log(`🚫 Filtering out "${recipe.name}" - contains allergen: "${allergen}"`);
+        return true;
+      }
+    }
+    
+    return false;
+  },
+
   getFallbackMealRecommendations(userData) {
     // Extract meal types from user's diet recommendations
     const mealSchedule = userData?.recommendations?.mealSchedule || 'Breakfast, Lunch, Dinner';
@@ -473,9 +508,10 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
     console.log('Meal schedule from diet:', mealSchedule);
     console.log('Extracted meal types:', mealTypes);
     console.log('Number of extracted types:', mealTypes.length);
+    console.log('User allergies:', userData.allergies);
+    console.log('Custom allergies:', userData.customAllergies);
     console.log('===========================================');
     
-    // Generate 7 recipes for each of the user's actual meal types
     const createRecipe = (name, calories, prepTime, ingredients, nutrients, instructions) => ({
       name, calories, prepTime, ingredients, nutrients, instructions
     });
@@ -1121,16 +1157,5 @@ FINAL REMINDER: Your response MUST be complete, valid JSON with 7 recipes for EA
         }
       ]
     };
-    
-    // CRITICAL FIX: Only return meal types that the user actually needs
-    const result = {};
-    mealTypes.forEach(mealType => {
-      result[mealType] = this.generateRecipesForMealType(mealType);
-    });
-    
-    console.log('✅ Final fallback result meal types:', Object.keys(result));
-    console.log('✅ Expected:', mealTypes.length, 'Got:', Object.keys(result).length);
-    
-    return result;
-  },
+  }
 };
