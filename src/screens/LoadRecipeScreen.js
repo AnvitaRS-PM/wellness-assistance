@@ -75,11 +75,18 @@ export default function LoadRecipeScreen({ navigation }) {
     }, { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 });
 
     setCalculatedCalories(Math.round(totals.calories));
+  }, [ingredients]);
 
-    // Update prep time based on number of ingredients and instructions
-    const basePrepMins = 10 + (ingredients.length * 2) + (instructions.length * 3);
-    setCalculatedPrepTime(`${basePrepMins}-${basePrepMins + 5} mins`);
-  }, [ingredients, instructions]);
+  // Calculate prep time ONLY when instructions change
+  useEffect(() => {
+    if (instructions.length > 0) {
+      // Base time + time per instruction step (each step takes ~3-5 minutes)
+      const basePrepMins = 10 + (instructions.length * 3);
+      setCalculatedPrepTime(`${basePrepMins}-${basePrepMins + 5} mins`);
+    } else {
+      setCalculatedPrepTime('15 mins'); // Default if no instructions yet
+    }
+  }, [instructions]);
 
   const handleAddIngredient = () => {
     if (currentIngredient.trim() === '') {
