@@ -35,18 +35,17 @@ export default function PersonalizationScreen({ navigation }) {
     return calculatedAge;
   };
 
-  // Check for existing user when name and DOB are both set
-  // DISABLED DURING TYPING - Only check on blur/continue
-  // This was causing massive lag during typing
-  /*
+  // Check for existing user when name and DOB are complete
   useEffect(() => {
     const checkUser = async () => {
+      // Skip if already loaded this user's data
       if (userData.name && userData.dateOfBirth && name === userData.name) {
         setIsEditingExistingUser(true);
         return;
       }
 
-      if (name && dateOfBirth && !isCheckingUser && !isEditingExistingUser) {
+      // Check for existing user when both name and DOB are set
+      if (name && name.trim().length > 2 && !isCheckingUser && !isEditingExistingUser) {
         setIsCheckingUser(true);
         const dobString = dateOfBirth.toISOString().split('T')[0];
         const existingData = await checkAndLoadUser(name, dobString);
@@ -54,7 +53,7 @@ export default function PersonalizationScreen({ navigation }) {
         if (existingData) {
           Alert.alert(
             'Welcome Back!',
-            `We found your previous data for ${name}. Loading your information...`,
+            `We found your previous data for ${name}. Would you like to load it?`,
             [
               {
                 text: 'Start Fresh',
@@ -68,11 +67,13 @@ export default function PersonalizationScreen({ navigation }) {
                 onPress: async () => {
                   await loadExistingUser(name, dobString);
                   setIsEditingExistingUser(true);
+                  // Load all the personalization data
                   setGender(existingData.gender || '');
                   setCurrentWeight(existingData.currentWeight || '');
                   setGoalWeight(existingData.goalWeight || '');
                   setHeight(existingData.height || '');
                   setDaysToAchieve(existingData.daysToAchieve || '');
+                  setAge(existingData.age || calculateAge(dateOfBirth).toString());
                   setIsCheckingUser(false);
                 }
               }
@@ -84,10 +85,10 @@ export default function PersonalizationScreen({ navigation }) {
       }
     };
 
-    const timeoutId = setTimeout(checkUser, 3000);
+    // Only check after user stops typing for 2 seconds
+    const timeoutId = setTimeout(checkUser, 2000);
     return () => clearTimeout(timeoutId);
   }, [name, dateOfBirth]);
-  */
 
   // Update age when DOB changes
   useEffect(() => {
@@ -110,7 +111,7 @@ export default function PersonalizationScreen({ navigation }) {
     });
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (!name || !gender || !currentWeight || !goalWeight || !height || !daysToAchieve) {
       Alert.alert('Missing Information', 'Please fill in all fields to continue.');
       return;
@@ -119,6 +120,40 @@ export default function PersonalizationScreen({ navigation }) {
     const calculatedAge = calculateAge(dateOfBirth);
     const dobString = dateOfBirth.toISOString().split('T')[0];
 
+    // Check if this user exists before continuing
+    if (!isEditingExistingUser) {
+      const existingData = await checkAndLoadUser(name, dobString);
+      if (existingData) {
+        Alert.alert(
+          'Welcome Back!',
+          `We found your previous data for ${name}. Would you like to load it?`,
+          [
+            {
+              text: 'Start Fresh',
+              style: 'cancel',
+              onPress: () => {
+                // Continue with new data
+                saveNewUserData(dobString, calculatedAge);
+              }
+            },
+            {
+              text: 'Load My Data',
+              onPress: async () => {
+                await loadExistingUser(name, dobString);
+                navigation.navigate('Goals');
+              }
+            }
+          ]
+        );
+        return;
+      }
+    }
+
+    // Save new or updated data
+    saveNewUserData(dobString, calculatedAge);
+  };
+
+  const saveNewUserData = (dobString, calculatedAge) => {
     // Check if key personalization data changed
     const dataChanged = 
       currentWeight !== userData.currentWeight ||
